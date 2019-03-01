@@ -3,9 +3,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:dataGrid2D="http://gu.se/DataGrid2D"
+        xmlns:ui="clr-namespace:SimpleSudokuSolver.UI"
         mc:Ignorable="d"
-        Title="Sudoku" Height="465" Width="375"
+        Title="Sudoku" Height="600" Width="550"
         WindowStartupLocation="CenterScreen" ResizeMode="NoResize"
         WindowStyle="ToolWindow">
     <Window.InputBindings>
@@ -34,11 +34,7 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <DataGrid Grid.Row="0"
-                      HeadersVisibility="None"
-                      IsReadOnly="True"
-                      FontSize="25"
-                      dataGrid2D:ItemsSource.Array2D="{Binding SudokuForDisplay}" />
+            <ui:SudokuBoard DataContext="{Binding SudokuPuzzle}" />
 
             <Grid Grid.Row="1" Height="75">
                 <TextBox x:Name="textBox" HorizontalAlignment="Stretch" VerticalContentAlignment="Top" Margin="5" IsReadOnly="True"

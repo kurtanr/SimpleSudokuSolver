@@ -3,7 +3,7 @@ using System;
 using System.ComponentModel;
 using System.Windows.Input;
 
-namespace SimpleSudokuSolver.UI
+namespace SimpleSudokuSolver.UI.ViewModel
 {
   public class MainViewModel : INotifyPropertyChanged
   {
@@ -18,32 +18,17 @@ namespace SimpleSudokuSolver.UI
     public event Action<SudokuPuzzle> SaveGame;
     public event Action ExitGame;
 
-    private int[,] _sudoku;
-    public int[,] Sudoku
+    private SudokuPuzzle _sudokuPuzzle;
+    public SudokuPuzzle SudokuPuzzle
     {
       get
       {
-        return _sudoku;
+        return _sudokuPuzzle;
       }
       private set
       {
-        _sudoku = value;
-        SudokuForDisplay = ToSudokuForDisplay(_sudoku);
-        OnPropertyChanged(nameof(Sudoku));
-      }
-    }
-
-    private string[,] _sudokuForDisplay;
-    public string[,] SudokuForDisplay
-    {
-      get
-      {
-        return _sudokuForDisplay;
-      }
-      private set
-      {
-        _sudokuForDisplay = value;
-        OnPropertyChanged(nameof(SudokuForDisplay));
+        _sudokuPuzzle = value;
+        OnPropertyChanged(nameof(SudokuPuzzle));
       }
     }
 
@@ -73,15 +58,16 @@ namespace SimpleSudokuSolver.UI
 
       NewGameCommand = new RelayCommand(ExecuteNewGameCommand);
       LoadGameCommand = new RelayCommand(ExecuteLoadGameCommand);
-      SaveGameCommand = new RelayCommand(ExecuteSaveGameCommand, () => Sudoku != null);
-      SolveGameCommand = new RelayCommand(ExecuteSolveGameCommand, () => Sudoku != null);
-      SolveGameStepCommand = new RelayCommand(ExecuteSolveGameStepCommand, () => Sudoku != null);
+      SaveGameCommand = new RelayCommand(ExecuteSaveGameCommand, () => SudokuPuzzle != null);
+      SolveGameCommand = new RelayCommand(ExecuteSolveGameCommand, () => SudokuPuzzle != null);
+      SolveGameStepCommand = new RelayCommand(ExecuteSolveGameStepCommand, () => SudokuPuzzle != null);
       ExitGameCommand = new RelayCommand(ExecuteExitGameCommand);
     }
 
     private void ExecuteNewGameCommand()
     {
-      Sudoku = _puzzleProvider.GetPuzzle();
+      var sudoku = _puzzleProvider.GetPuzzle();
+      SudokuPuzzle = new SudokuPuzzle(sudoku);
       Message = string.Empty;
     }
 
@@ -93,7 +79,7 @@ namespace SimpleSudokuSolver.UI
         var sudokuPuzzle = loadGame();
         if (sudokuPuzzle != null)
         {
-          Sudoku = sudokuPuzzle.ToIntArray();
+          SudokuPuzzle = sudokuPuzzle;
           Message = string.Empty;
         }
       }
@@ -101,40 +87,42 @@ namespace SimpleSudokuSolver.UI
 
     private void ExecuteSaveGameCommand()
     {
-      SaveGame?.Invoke(new SudokuPuzzle(Sudoku));
+      SaveGame?.Invoke(SudokuPuzzle);
     }
 
     private void ExecuteSolveGameCommand()
     {
-      if (_solver.IsSolved(Sudoku))
+      if (_solver.IsSolved(SudokuPuzzle.ToIntArray()))
         return;
 
-      var puzzle = _solver.Solve(Sudoku, out SingleStepSolution[] steps);
-      Sudoku = puzzle.ToIntArray();
+      var puzzle = _solver.Solve(SudokuPuzzle.ToIntArray(), out SingleStepSolution[] steps);
+      SudokuPuzzle = puzzle;
 
       foreach (var step in steps)
       {
         AppendMessage(step.SolutionDescription);
       }
 
-      if (!_solver.IsSolved(Sudoku))
+      if (!_solver.IsSolved(SudokuPuzzle.ToIntArray()))
         AppendMessage("Cannot solve puzzle");
     }
 
     private void ExecuteSolveGameStepCommand()
     {
-      if (_solver.IsSolved(Sudoku))
+      var sudoku = SudokuPuzzle.ToIntArray();
+
+      if (_solver.IsSolved(sudoku))
         return;
 
-      var singleStepSolution = _solver.SolveSingleStep(Sudoku);
+      var singleStepSolution = _solver.SolveSingleStep(sudoku);
       if (singleStepSolution == null)
       {
         AppendMessage("Cannot solve puzzle step");
       }
       else
       {
-        Sudoku[singleStepSolution.IndexOfRow, singleStepSolution.IndexOfColumn] = singleStepSolution.Value;
-        Sudoku = new SudokuPuzzle(Sudoku).ToIntArray();
+        sudoku[singleStepSolution.IndexOfRow, singleStepSolution.IndexOfColumn] = singleStepSolution.Value;
+        SudokuPuzzle = new SudokuPuzzle(sudoku);
         AppendMessage(singleStepSolution.SolutionDescription);
       }
     }
@@ -142,23 +130,6 @@ namespace SimpleSudokuSolver.UI
     private void ExecuteExitGameCommand()
     {
       ExitGame?.Invoke();
-    }
-
-    private string[,] ToSudokuForDisplay(int[,] sudoku)
-    {
-      int rowCount = sudoku.GetLength(0);
-      int columnCount = sudoku.GetLength(0);
-      string[,] result = new string[rowCount, columnCount];
-
-      for (int i = 0; i < rowCount; i++)
-      {
-        for (int j = 0; j < columnCount; j++)
-        {
-          result[i, j] = sudoku[i, j] == 0 ? string.Empty : sudoku[i, j].ToString();
-        }
-      }
-
-      return result;
     }
 
     private void AppendMessage(string message)

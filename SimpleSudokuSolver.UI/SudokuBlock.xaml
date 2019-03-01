@@ -1,0 +1,70 @@
+﻿<UserControl x:Class="SimpleSudokuSolver.UI.SudokuBlock"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="180" d:DesignWidth="180">
+    <UserControl.Resources>
+        <Style TargetType="Border">
+            <Setter Property="Background" Value="White" />
+            <Setter Property="BorderBrush" Value="DarkGray" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="2" />
+            <Setter Property="Margin" Value="2" />
+            <Style.Triggers>
+                <Trigger Property="Border.IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="LightBlue" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="Courier New" />
+            <Setter Property="FontSize" Value="40" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="TextAlignment" Value="Center" />
+            <Setter Property="VerticalAlignment" Value="Stretch" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                    <Setter Property="Background" Value="LightGray" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsActive}" Value="True">
+                    <Setter Property="Background" Value="LightSteelBlue" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+    <Grid>
+        <Border BorderThickness="1" BorderBrush="Black" Style="{x:Null}" Padding="2" Margin="0">
+            <UniformGrid>
+                <Border>
+                    <TextBlock x:Name="text1" Text="{Binding Value}" />
+                </Border>
+                <Border>
+                    <TextBlock x:Name="text2" Text="{Binding Value}" />
+                </Border>
+                <Border>
+                    <TextBlock x:Name="text3" Text="{Binding Value}" />
+                </Border>
+                <Border>
+                    <TextBlock x:Name="text4" Text="{Binding Value}" />
+                </Border>
+                <Border>
+                    <TextBlock x:Name="text5" Text="{Binding Value}" />
+                </Border>
+                <Border>
+                    <TextBlock x:Name="text6" Text="{Binding Value}" />
+                </Border>
+                <Border>
+                    <TextBlock x:Name="text7" Text="{Binding Value}" />
+                </Border>
+                <Border>
+                    <TextBlock x:Name="text8" Text="{Binding Value}"/>
+                </Border>
+                <Border>
+                    <TextBlock x:Name="text9" Text="{Binding Value}" />
+                </Border>
+            </UniformGrid>
+        </Border>
+    </Grid>
+</UserControl>

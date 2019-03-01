@@ -2,6 +2,7 @@
 using SimpleSudokuSolver.Model;
 using SimpleSudokuSolver.PuzzleProviders;
 using SimpleSudokuSolver.UI.PuzzleProviders;
+using SimpleSudokuSolver.UI.ViewModel;
 using System.IO;
 using System.Windows;
 

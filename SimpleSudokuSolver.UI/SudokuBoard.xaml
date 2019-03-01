@@ -1,0 +1,22 @@
+﻿<UserControl x:Class="SimpleSudokuSolver.UI.SudokuBoard"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SimpleSudokuSolver.UI"
+             mc:Ignorable="d"
+             d:DesignHeight="540" d:DesignWidth="540">
+    <Grid Margin="2">
+        <UniformGrid>
+            <local:SudokuBlock x:Name="block1" />
+            <local:SudokuBlock x:Name="block2" />
+            <local:SudokuBlock x:Name="block3" />
+            <local:SudokuBlock x:Name="block4" />
+            <local:SudokuBlock x:Name="block5" />
+            <local:SudokuBlock x:Name="block6" />
+            <local:SudokuBlock x:Name="block7" />
+            <local:SudokuBlock x:Name="block8" />
+            <local:SudokuBlock x:Name="block9" />
+        </UniformGrid>
+    </Grid>
+</UserControl>
