@@ -99,5 +99,59 @@ namespace SimpleSudokuSolver.Test
       Assert.That(singleStepSolution.IndexOfColumn, Is.EqualTo(4));
       Assert.That(singleStepSolution.Value, Is.EqualTo(3));
     }
+
+    [Test]
+    public void LockedCandidatesInColumnTest()
+    {
+      var sudoku = new int[,]
+      {
+        { 0,1,2,0,0,0,0,0,0 },
+        { 0,0,0,0,0,3,0,0,0 },
+        { 0,5,6,0,0,0,0,0,0 },
+        { 0,0,0,0,0,0,0,0,0 },
+        { 0,0,0,0,0,0,0,0,0 },
+        { 0,0,0,0,0,0,0,0,0 },
+        { 0,0,0,0,0,0,0,0,0 },
+        { 0,0,0,0,0,0,0,0,0 },
+        { 0,0,0,0,0,0,0,0,0 },
+       };
+
+      var solver = new DefaultSolver();
+      var sudokuPuzzle = solver.Solve(sudoku);
+
+      CollectionAssert.DoesNotContain(sudokuPuzzle.Cells[3, 0].CanBe, 3);
+      CollectionAssert.DoesNotContain(sudokuPuzzle.Cells[4, 0].CanBe, 3);
+      CollectionAssert.DoesNotContain(sudokuPuzzle.Cells[5, 0].CanBe, 3);
+      CollectionAssert.DoesNotContain(sudokuPuzzle.Cells[6, 0].CanBe, 3);
+      CollectionAssert.DoesNotContain(sudokuPuzzle.Cells[7, 0].CanBe, 3);
+      CollectionAssert.DoesNotContain(sudokuPuzzle.Cells[8, 0].CanBe, 3);
+    }
+
+    [Test]
+    public void LockedCandidatesInRowTest()
+    {
+      var sudoku = new int[,]
+      {
+        { 0,0,0,0,0,0,0,0,0 },
+        { 0,0,0,0,0,0,0,0,0 },
+        { 0,0,0,0,0,0,0,0,0 },
+        { 0,0,0,0,0,0,0,1,2 },
+        { 0,0,0,0,0,0,0,4,5 },
+        { 0,0,0,0,0,0,0,0,0 },
+        { 0,0,0,0,0,0,0,0,0 },
+        { 0,0,0,0,0,0,3,0,0 },
+        { 0,0,0,0,0,0,0,0,0 },
+       };
+
+      var solver = new DefaultSolver();
+      var sudokuPuzzle = solver.Solve(sudoku);
+
+      CollectionAssert.DoesNotContain(sudokuPuzzle.Cells[5, 0].CanBe, 3);
+      CollectionAssert.DoesNotContain(sudokuPuzzle.Cells[5, 1].CanBe, 3);
+      CollectionAssert.DoesNotContain(sudokuPuzzle.Cells[5, 2].CanBe, 3);
+      CollectionAssert.DoesNotContain(sudokuPuzzle.Cells[5, 3].CanBe, 3);
+      CollectionAssert.DoesNotContain(sudokuPuzzle.Cells[5, 4].CanBe, 3);
+      CollectionAssert.DoesNotContain(sudokuPuzzle.Cells[5, 5].CanBe, 3);
+    }
   }
 }

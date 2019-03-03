@@ -10,6 +10,8 @@ namespace SimpleSudokuSolver
   /// </summary>
   public class DefaultSolver : ISudokuSolver
   {
+    private SudokuPuzzle _sudokuPuzzleAfterFailedSolveSingleStep;
+
     #region ISudokuSolver interface implementation
 
     /// <inheritdoc />
@@ -30,6 +32,7 @@ namespace SimpleSudokuSolver
         if (solution == null)
         {
           // Sudoku cannot be solved :(
+          sudokuPuzzle = _sudokuPuzzleAfterFailedSolveSingleStep;
           break;
         }
         else
@@ -58,7 +61,8 @@ namespace SimpleSudokuSolver
         SingleInColumn,
         SingleInBlock,
         HiddenSingle,
-        NakedSingle
+        NakedSingle,
+        LockedCandidates
       };
 
       foreach (var technique in solvingTechniques)
@@ -68,6 +72,7 @@ namespace SimpleSudokuSolver
           return solution;
       }
 
+      _sudokuPuzzleAfterFailedSolveSingleStep = sudokuPuzzle;
       return null;
     }
 
@@ -137,14 +142,15 @@ namespace SimpleSudokuSolver
     {
       foreach (var block in sudokuPuzzle.Blocks)
       {
-        var blocksWithNoValue = block.Cells.OfType<Cell>().Where(x => !x.HasValue).ToArray();
+        var blockCells = block.Cells.OfType<Cell>();
+        var blocksWithNoValue = blockCells.Where(x => !x.HasValue).ToArray();
 
         // If only single cell in the block does not have a value
         if (blocksWithNoValue.Length == 1)
         {
-          var knownValues = block.Cells.OfType<Cell>().Where(x => x.HasValue).Select(x => x.Value);
+          var knownValues = blockCells.Where(x => x.HasValue).Select(x => x.Value);
           var value = sudokuPuzzle.PossibleCellValues.Except(knownValues).Single();
-          var cellWithNoValue = block.Cells.OfType<Cell>().Where(x => !x.HasValue).Single();
+          var cellWithNoValue = blockCells.Where(x => !x.HasValue).Single();
 
           var cellIndex = sudokuPuzzle.GetCellIndex(cellWithNoValue);
           return new SingleStepSolution(cellIndex.RowIndex, cellIndex.ColumnIndex, value,
@@ -183,8 +189,9 @@ namespace SimpleSudokuSolver
 
       foreach (var block in sudokuPuzzle.Blocks)
       {
-        var cellsWithValue = block.Cells.OfType<Cell>().Where(x => x.HasValue).ToArray();
-        var cellsWithNoValue = block.Cells.OfType<Cell>().Where(x => !x.HasValue).ToArray();
+        var blockCells = block.Cells.OfType<Cell>();
+        var cellsWithValue = blockCells.Where(x => x.HasValue).ToArray();
+        var cellsWithNoValue = blockCells.Where(x => !x.HasValue).ToArray();
 
         foreach (var cell in cellsWithNoValue)
         {
@@ -247,8 +254,9 @@ namespace SimpleSudokuSolver
 
       foreach (var block in sudokuPuzzle.Blocks)
       {
-        var cellsWithValue = block.Cells.OfType<Cell>().Where(x => x.HasValue).ToArray();
-        var cellsWithNoValue = block.Cells.OfType<Cell>().Where(x => !x.HasValue).ToArray();
+        var blockCells = block.Cells.OfType<Cell>();
+        var cellsWithValue = blockCells.Where(x => x.HasValue).ToArray();
+        var cellsWithNoValue = blockCells.Where(x => !x.HasValue).ToArray();
         possibleCellValuesBasedOnBlock = sudokuPuzzle.PossibleCellValues.Except(cellsWithValue.Select(x => x.Value)).ToArray();
 
         foreach (var cell in cellsWithNoValue)
@@ -259,17 +267,144 @@ namespace SimpleSudokuSolver
         }
       }
 
+      return NakedSingleCore(sudokuPuzzle, "NakedSingle");
+    }
+
+    private SingleStepSolution NakedSingleCore(SudokuPuzzle sudokuPuzzle, string strategyName)
+    {
       for (int i = 0; i < sudokuPuzzle.NumberOfRowsOrColumnsInPuzzle; i++)
       {
         for (int j = 0; j < sudokuPuzzle.NumberOfRowsOrColumnsInPuzzle; j++)
         {
           if (sudokuPuzzle.Cells[i, j].CanBe.Count == 1)
             return new SingleStepSolution(i, j, sudokuPuzzle.Cells[i, j].CanBe[0],
-              $"Row {i + 1} Column {j + 1} Value {sudokuPuzzle.Cells[i, j].CanBe[0]} [NakedSingle]");
+              $"Row {i + 1} Column {j + 1} Value {sudokuPuzzle.Cells[i, j].CanBe[0]} [{strategyName}]");
         }
       }
 
       return null;
+    }
+
+    private SingleStepSolution LockedCandidates(SudokuPuzzle sudokuPuzzle)
+    {
+      bool reducedNumberOfCandidates = false;
+
+      foreach(var block in sudokuPuzzle.Blocks)
+      {
+        var blockCells = block.Cells.OfType<Cell>();
+        var cellsWithValue = blockCells.Where(x => x.HasValue).ToArray();
+        var cellsWithNoValue = blockCells.Where(x => !x.HasValue).ToArray();
+        var possibleCellValuesInBlock = sudokuPuzzle.PossibleCellValues.Except(
+          cellsWithValue.Select(x => x.Value)).ToArray();
+
+        var valuesWhichCanAppearOnlyInSingleBlockRow = GetValuesWhichCanAppearOnlyInSingleBlockRow(
+          sudokuPuzzle, block, possibleCellValuesInBlock);
+
+        var valuesWhichCanAppearOnlyInSingleBlockColumn = GetValuesWhichCanAppearOnlyInSingleBlockColumn(
+          sudokuPuzzle, block, possibleCellValuesInBlock);
+
+        foreach(var value in valuesWhichCanAppearOnlyInSingleBlockRow)
+        {
+          int cellValue = value.Item1;
+          int rowIndex = block.BlockRowIndex * sudokuPuzzle.NumberOfRowsOrColumnsInBlock + value.Item2;
+          foreach(var cell in sudokuPuzzle.Rows[rowIndex].Cells)
+          {
+            if(!blockCells.Contains(cell) && cell.CanBe.Contains(cellValue))
+            {
+              reducedNumberOfCandidates = true;
+              cell.CanBe.Remove(cellValue);
+            }
+          }
+        }
+
+        foreach (var value in valuesWhichCanAppearOnlyInSingleBlockColumn)
+        {
+          int cellValue = value.Item1;
+          int columnIndex = block.BlockColumnIndex * sudokuPuzzle.NumberOfRowsOrColumnsInBlock + value.Item2;
+          foreach (var cell in sudokuPuzzle.Columns[columnIndex].Cells)
+          {
+            if (!blockCells.Contains(cell) && cell.CanBe.Contains(cellValue))
+            {
+              reducedNumberOfCandidates = true;
+              cell.CanBe.Remove(cellValue);
+            }
+          }
+        }
+      }
+
+      return reducedNumberOfCandidates ? NakedSingleCore(sudokuPuzzle, "NakedSingle+LockedCandidates") : null;
+    }
+
+    // Item1=value, Item2=rowIndex
+    private Tuple<int, int>[] GetValuesWhichCanAppearOnlyInSingleBlockRow(
+      SudokuPuzzle sudokuPuzzle, Block block, int[] possibleCellValuesInBlock)
+    {
+      // Item1=value, Item2=rowsThatContainIt
+      var valueAndRowsThatContainIt = new List<Tuple<int, List<int>>>();
+
+      foreach (var possibleCellValue in possibleCellValuesInBlock)
+      {
+        var rowIndexes = new List<int>();
+
+        for (int i = 0; i < sudokuPuzzle.NumberOfRowsOrColumnsInBlock; i++)
+        {
+          var valueFound = false;
+
+          for (int j = 0; j < sudokuPuzzle.NumberOfRowsOrColumnsInBlock; j++)
+          {
+            if (block.Cells[i, j].CanBe.Contains(possibleCellValue))
+            {
+              valueFound = true;
+              break;
+            }
+          }
+
+          if (valueFound)
+            rowIndexes.Add(i);
+        }
+
+        valueAndRowsThatContainIt.Add(new Tuple<int, List<int>>(possibleCellValue, rowIndexes));
+      }
+
+      return valueAndRowsThatContainIt
+        .Where(x => x.Item2.Count == 1)
+        .Select(x => new Tuple<int, int>(x.Item1, x.Item2.Single())).ToArray();
+    }
+
+    // Item1=value, Item2=columnIndex
+    private Tuple<int, int>[] GetValuesWhichCanAppearOnlyInSingleBlockColumn(
+      SudokuPuzzle sudokuPuzzle, Block block, int[] possibleCellValuesInBlock)
+    {
+      // Item1=value, Item2=columnsThatContainIt
+      var valueAndColumnsThatContainIt = new List<Tuple<int, List<int>>>();
+
+      foreach(var possibleCellValue in possibleCellValuesInBlock)
+      {
+        var columnIndexes = new List<int>();
+
+        for (int i = 0; i < sudokuPuzzle.NumberOfRowsOrColumnsInBlock; i++)
+        {
+          var valueFound = false;
+
+          for (int j = 0; j < sudokuPuzzle.NumberOfRowsOrColumnsInBlock; j++)
+          {
+            if (block.Cells[j, i].CanBe.Contains(possibleCellValue))
+            {
+              valueFound = true;
+              break;
+            }
+          }
+
+          if (valueFound)
+            columnIndexes.Add(i);
+        }
+
+        valueAndColumnsThatContainIt.Add(new Tuple<int, List<int>>(possibleCellValue, columnIndexes));
+      }
+
+      return valueAndColumnsThatContainIt
+        .Where(x => x.Item2.Count == 1)
+        .Select(x => new Tuple<int, int>(x.Item1, x.Item2.Single())).ToArray();
     }
 
     #endregion

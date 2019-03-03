@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>0.1.0</Version>
+    <Version>0.2.0</Version>
     <Authors>Robert Kurtanjek</Authors>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/kurtanr/SimpleSudokuSolver</PackageProjectUrl>
@@ -13,7 +13,7 @@
 
 It supports solving of sudoku puzzles steps-by-step, using various solving strategies, from the simplest ones to the more complex ones. It can be used as a learning tool on how to solve sudoku puzzles.
 
-Repository contains a UI which uses the library (+tests for the library).</Description>
+Repository contains tests for the library and a UI which uses the library and can be used to play sudoku.</Description>
   </PropertyGroup>
 
 </Project>

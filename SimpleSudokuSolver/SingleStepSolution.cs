@@ -32,5 +32,10 @@
       Value = value;
       SolutionDescription = solutionDescription;
     }
+
+    public override string ToString()
+    {
+      return SolutionDescription;
+    }
   }
 }
