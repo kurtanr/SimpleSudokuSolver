@@ -32,6 +32,12 @@ namespace SimpleSudokuSolver.UI.ViewModel
     public string Value
     {
       get { return Cell.Value != 0 ? Cell.Value.ToString() : string.Empty; }
+      set
+      {
+        // Must be validated before setting
+        Cell.Value = int.Parse(value);
+        OnPropertyChanged(nameof(Value));
+      }
     }
 
     public CellViewModel(Cell cell)

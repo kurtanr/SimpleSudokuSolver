@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:ui="clr-namespace:SimpleSudokuSolver.UI"
         mc:Ignorable="d"
-        Title="Sudoku" Height="600" Width="550"
+        Title="Sudoku" Height="610" Width="550"
         WindowStartupLocation="CenterScreen" ResizeMode="NoResize"
         WindowStyle="ToolWindow">
     <Window.InputBindings>
@@ -32,14 +32,18 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <ui:SudokuBoard DataContext="{Binding SudokuPuzzle}" />
+            <ui:SudokuBoard SudokuPuzzle="{Binding SudokuPuzzle}" SolvedSudokuPuzzle="{Binding SolvedSudokuPuzzle}" />
 
             <Grid Grid.Row="1" Height="75">
                 <TextBox x:Name="textBox" HorizontalAlignment="Stretch" VerticalContentAlignment="Top" Margin="5" IsReadOnly="True"
                          Text="{Binding Message, Mode=OneWay}" VerticalScrollBarVisibility="Visible"/>
             </Grid>
+            <StatusBar Grid.Row="2">
+                <TextBlock Text="{Binding StatusMessage}" />
+            </StatusBar>
         </Grid>
     </DockPanel>
 </Window>

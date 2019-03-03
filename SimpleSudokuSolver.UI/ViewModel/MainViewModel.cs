@@ -1,6 +1,8 @@
 ﻿using SimpleSudokuSolver.Model;
 using System;
 using System.ComponentModel;
+using System.Linq;
+using System.Text;
 using System.Windows.Input;
 
 namespace SimpleSudokuSolver.UI.ViewModel
@@ -17,6 +19,22 @@ namespace SimpleSudokuSolver.UI.ViewModel
     public event Func<SudokuPuzzle> LoadGame;
     public event Action<SudokuPuzzle> SaveGame;
     public event Action ExitGame;
+
+    public Tuple<int,int> LastUpdatedCellIndex { get; private set; }
+
+    private SudokuPuzzle _solvedSudokuPuzzle;
+    public SudokuPuzzle SolvedSudokuPuzzle
+    {
+      get
+      {
+        return _solvedSudokuPuzzle;
+      }
+      private set
+      {
+        _solvedSudokuPuzzle = value;
+        OnPropertyChanged(nameof(SolvedSudokuPuzzle));
+      }
+    }
 
     private SudokuPuzzle _sudokuPuzzle;
     public SudokuPuzzle SudokuPuzzle
@@ -46,6 +64,20 @@ namespace SimpleSudokuSolver.UI.ViewModel
       }
     }
 
+    private string _statusMessage;
+    public string StatusMessage
+    {
+      get
+      {
+        return _statusMessage;
+      }
+      private set
+      {
+        _statusMessage = value;
+        OnPropertyChanged(nameof(StatusMessage));
+      }
+    }
+
     private readonly ISudokuPuzzleProvider _puzzleProvider;
     private readonly ISudokuSolver _solver;
 
@@ -62,13 +94,18 @@ namespace SimpleSudokuSolver.UI.ViewModel
       SolveGameCommand = new RelayCommand(ExecuteSolveGameCommand, () => SudokuPuzzle != null);
       SolveGameStepCommand = new RelayCommand(ExecuteSolveGameStepCommand, () => SudokuPuzzle != null);
       ExitGameCommand = new RelayCommand(ExecuteExitGameCommand);
+
+      StatusMessage = "Start new game or load and existing one";
     }
 
     private void ExecuteNewGameCommand()
     {
       var sudoku = _puzzleProvider.GetPuzzle();
       SudokuPuzzle = new SudokuPuzzle(sudoku);
+      SolvedSudokuPuzzle = _solver.Solve(sudoku);
+      LastUpdatedCellIndex = null;
       Message = string.Empty;
+      UpdateStatusMessage();
     }
 
     private void ExecuteLoadGameCommand()
@@ -80,7 +117,10 @@ namespace SimpleSudokuSolver.UI.ViewModel
         if (sudokuPuzzle != null)
         {
           SudokuPuzzle = sudokuPuzzle;
+          SolvedSudokuPuzzle = _solver.Solve(sudokuPuzzle.ToIntArray());
+          LastUpdatedCellIndex = null;
           Message = string.Empty;
+          UpdateStatusMessage();
         }
       }
     }
@@ -105,6 +145,9 @@ namespace SimpleSudokuSolver.UI.ViewModel
 
       if (!_solver.IsSolved(SudokuPuzzle.ToIntArray()))
         AppendMessage("Cannot solve puzzle");
+
+      LastUpdatedCellIndex = null;
+      UpdateStatusMessage();
     }
 
     private void ExecuteSolveGameStepCommand()
@@ -122,9 +165,12 @@ namespace SimpleSudokuSolver.UI.ViewModel
       else
       {
         sudoku[singleStepSolution.IndexOfRow, singleStepSolution.IndexOfColumn] = singleStepSolution.Value;
+        LastUpdatedCellIndex = new Tuple<int, int>(singleStepSolution.IndexOfRow, singleStepSolution.IndexOfColumn);
         SudokuPuzzle = new SudokuPuzzle(sudoku);
         AppendMessage(singleStepSolution.SolutionDescription);
       }
+
+      UpdateStatusMessage();
     }
 
     private void ExecuteExitGameCommand()
@@ -132,9 +178,30 @@ namespace SimpleSudokuSolver.UI.ViewModel
       ExitGame?.Invoke();
     }
 
-    private void AppendMessage(string message)
+    public void AppendMessage(string message)
     {
       Message += $"{message}{Environment.NewLine}";
+    }
+
+    public void UpdateStatusMessage()
+    {
+      var isSolved = _solver.IsSolved(SudokuPuzzle.ToIntArray());
+      if (isSolved)
+      {
+        StatusMessage = "Sudoku is solved";
+        return;
+      }
+
+      var sb = new StringBuilder("Values left: ");
+      for(int i = 1; i <= SudokuPuzzle.NumberOfRowsOrColumnsInPuzzle; i++)
+      {
+        var numberOfValuesLeft = SudokuPuzzle.NumberOfRowsOrColumnsInPuzzle - SudokuPuzzle.Cells.OfType<Cell>().Where(x => x.Value == i).Count();
+        var separator = (i == SudokuPuzzle.NumberOfRowsOrColumnsInPuzzle) ? string.Empty : ",";
+        if(numberOfValuesLeft > 0)
+          sb.Append($"{i} x{numberOfValuesLeft}{separator} ");
+      }
+
+      StatusMessage = sb.ToString();
     }
 
     public event PropertyChangedEventHandler PropertyChanged;
