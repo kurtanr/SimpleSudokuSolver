@@ -11,7 +11,7 @@ It supports solving of sudoku puzzles steps-by-step, using various solving strat
 Repository contains tests for the library and a UI which uses the library and can be used to play sudoku.
 
 <p align="center">
-![SimpleSudokuSolver.UI](https://raw.githubusercontent.com/kurtanr/SimpleSudokuSolver/master/images/SimpleSudokuSolver.UI.png)
+    <img src="https://raw.githubusercontent.com/kurtanr/SimpleSudokuSolver/master/images/SimpleSudokuSolver.UI.png" alt="SimpleSudokuSolver.UI">
 </p>
 
 Out of the well known [Sudoku Solving Techniques](https://sudoku9x9.com/sudoku_solving_techniques_9x9.html), the solver currently implements:
