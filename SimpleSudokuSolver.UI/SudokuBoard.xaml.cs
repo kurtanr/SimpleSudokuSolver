@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
+using System.Windows.Input;
 
 namespace SimpleSudokuSolver.UI
 {
@@ -58,8 +59,12 @@ namespace SimpleSudokuSolver.UI
       window.KeyDown += OnKeyDown;
     }
 
-    private void OnKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+    private void OnKeyDown(object sender, KeyEventArgs e)
     {
+      // if arrow key was pressed, do navigation
+      if (ProcessArrowKey(e.Key))
+        return;
+
       // if there is no active cell or active cell already has value
       if (_activeCell == null || _activeCell.Cell.HasValue)
         return;
@@ -70,11 +75,11 @@ namespace SimpleSudokuSolver.UI
         return;
 
       // if value is not correct or solver cannot solve the puzzle (so we do not know if the value is correct), we do not allow it
-      var mainViewModel = (MainViewModel)DataContext;
       var cellIndex = SudokuPuzzle.GetCellIndex(_activeCell.Cell);
       var solvedValue = SolvedSudokuPuzzle.Cells[cellIndex.RowIndex, cellIndex.ColumnIndex].Value;
 
-      if(solvedValue == 0)
+      var mainViewModel = (MainViewModel)DataContext;
+      if (solvedValue == 0)
       {
         mainViewModel.AppendMessage("Cannot enter value because solver cannot solve the puzzle");
         return;
@@ -91,18 +96,12 @@ namespace SimpleSudokuSolver.UI
       mainViewModel.UpdateStatusMessage();
     }
 
-    private void OnMouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+    private void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
     {
       var frameworkElement = e.OriginalSource as FrameworkElement;
       if (frameworkElement.DataContext is CellViewModel cellViewModel)
       {
-        if (_activeCell != null)
-          _activeCell.IsActive = false;
-
-        _activeCell = cellViewModel;
-        _activeCell.IsActive = true;
-
-        SetSelection(cellViewModel);
+        SetActiveCell(cellViewModel.Cell);
       }
     }
 
@@ -111,7 +110,7 @@ namespace SimpleSudokuSolver.UI
     private void BindPuzzle()
     {
       _cellViewModels.Clear();
-      _activeCell = null;
+      SetActiveCell(null);
 
       SetCellViewModelsForBlock(block1, SudokuPuzzle.Blocks[0, 0]);
       SetCellViewModelsForBlock(block2, SudokuPuzzle.Blocks[0, 1]);
@@ -130,9 +129,7 @@ namespace SimpleSudokuSolver.UI
           _activeCell.IsActive = false;
 
         var lastUpdatedCell = SudokuPuzzle.Cells[lastUpdatedCellIndex.Item1, lastUpdatedCellIndex.Item2];
-        _activeCell = _cellViewModels.Single(x => x.Cell == lastUpdatedCell);
-        _activeCell.IsActive = true;
-        SetSelection(_activeCell);
+        SetActiveCell(lastUpdatedCell);
       }
     }
 
@@ -143,20 +140,86 @@ namespace SimpleSudokuSolver.UI
       sudokuBlock.DataContext = cellsViewModels;
     }
 
-    private int GetKeyValue(System.Windows.Input.Key key)
+    private bool ProcessArrowKey(Key key)
+    {
+      switch (key)
+      {
+        case Key.Down:
+          ChangeActiveCell(1, 0);
+          return true;
+        case Key.Up:
+          ChangeActiveCell(-1, 0);
+          return true;
+        case Key.Left:
+          ChangeActiveCell(0, -1);
+          return true;
+        case Key.Right:
+          ChangeActiveCell(0, 1);
+          return true;
+        default:
+          return false;
+      }
+    }
+
+    private void ChangeActiveCell(int rowOffset, int columnOffset)
+    {
+      if (SudokuPuzzle == null)
+        return;
+
+      var maxIndex = SudokuPuzzle.NumberOfRowsOrColumnsInPuzzle - 1;
+
+      if (_activeCell == null)
+      {
+        var cell = SudokuPuzzle.Cells[rowOffset >= 0 ? 0 : maxIndex, columnOffset >= 0 ? 0 : maxIndex];
+        SetActiveCell(cell);
+      }
+      else
+      {
+        var activeCellIndex = SudokuPuzzle.GetCellIndex(_activeCell.Cell);
+
+        var proposedRowIndex = activeCellIndex.RowIndex + rowOffset;
+        var rowIndex = (proposedRowIndex < 0) ? maxIndex :
+          proposedRowIndex % SudokuPuzzle.NumberOfRowsOrColumnsInPuzzle;
+
+        var proposedColumnIndex = activeCellIndex.ColumnIndex + columnOffset;
+        var columnIndex = (proposedColumnIndex < 0) ? maxIndex :
+          proposedColumnIndex % SudokuPuzzle.NumberOfRowsOrColumnsInPuzzle;
+
+        var cell = SudokuPuzzle.Cells[rowIndex, columnIndex];
+        SetActiveCell(cell);
+      }
+    }
+
+    private int GetKeyValue(Key key)
     {
       int keyValue = (int)key;
       int value = -1;
-      if ((keyValue >= (int)System.Windows.Input.Key.D0) && (keyValue <= (int)System.Windows.Input.Key.D9))
+      if ((keyValue >= (int)Key.D0) && (keyValue <= (int)Key.D9))
       {
-        value = (int)key - (int)System.Windows.Input.Key.D0;
+        value = (int)key - (int)Key.D0;
       }
-      else if (keyValue >= (int)System.Windows.Input.Key.NumPad0 && keyValue <= (int)System.Windows.Input.Key.NumPad9)
+      else if (keyValue >= (int)Key.NumPad0 && keyValue <= (int)Key.NumPad9)
       {
-        value = (int)key - (int)System.Windows.Input.Key.NumPad0;
+        value = (int)key - (int)Key.NumPad0;
       }
 
       return value;
+    }
+
+    private void SetActiveCell(Cell cell)
+    {
+      if (_activeCell != null)
+      {
+        _activeCell.IsActive = false;
+        _activeCell = null;
+      }
+
+      if(cell != null)
+      {
+        _activeCell = _cellViewModels.Single(x => x.Cell == cell);
+        _activeCell.IsActive = true;
+        SetSelection(_activeCell);
+      }
     }
 
     private void SetSelection(CellViewModel selectedCellViewModel)
