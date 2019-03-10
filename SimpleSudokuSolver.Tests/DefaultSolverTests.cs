@@ -153,5 +153,27 @@ namespace SimpleSudokuSolver.Test
       CollectionAssert.DoesNotContain(sudokuPuzzle.Cells[5, 4].CanBe, 3);
       CollectionAssert.DoesNotContain(sudokuPuzzle.Cells[5, 5].CanBe, 3);
     }
+
+    [Test]
+    public void NakedPairInRowTest()
+    {
+      var sudoku = new int[,]
+      {
+        { 9,0,0,4,0,0,1,0,0 },
+        { 0,5,6,0,0,0,2,0,0 },
+        { 0,7,8,0,0,6,0,0,0 },
+        { 0,0,0,0,2,3,0,0,0 },
+        { 0,0,0,0,5,0,0,7,3 },
+        { 0,0,0,0,7,0,0,8,0 },
+        { 0,0,0,0,0,0,0,0,0 },
+        { 0,0,0,0,0,0,0,0,0 },
+        { 0,0,0,0,0,0,0,0,0 },
+       };
+
+      var solver = new DefaultSolver();
+      var sudokuPuzzle = solver.Solve(sudoku);
+
+      Assert.That(sudokuPuzzle.Cells[0,4].Value, Is.EqualTo(8));
+    }
   }
 }
