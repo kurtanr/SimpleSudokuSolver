@@ -19,3 +19,4 @@ Out of the well known [Sudoku Solving Techniques](https://sudoku9x9.com/sudoku_s
 * Naked Single
 * Locked Candidates
 * Naked Pair
+* Naked Triple

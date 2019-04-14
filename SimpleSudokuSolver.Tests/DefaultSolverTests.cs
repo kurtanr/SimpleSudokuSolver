@@ -155,25 +155,101 @@ namespace SimpleSudokuSolver.Test
     }
 
     [Test]
+    public void NakedPairInColumnTest()
+    {
+      var sudoku = new int[,]
+      {
+        { 9,0,0,0,0,0,0,0,0 },
+        { 0,5,7,0,0,0,0,0,0 },
+        { 0,6,8,0,0,0,0,0,0 },
+        { 4,0,0,0,0,0,0,0,0 },
+        { 0,0,0,2,5,7,0,0,0 },
+        { 0,0,6,3,0,0,0,0,0 },
+        { 1,0,2,0,0,0,0,0,0 },
+        { 0,0,0,0,7,0,8,0,0 },
+        { 0,0,0,0,3,0,0,0,0 }
+       };
+
+      var solver = new DefaultSolver();
+      var singleStepSolution = solver.SolveSingleStep(sudoku);
+
+      Assert.That(singleStepSolution.IndexOfRow, Is.EqualTo(4));
+      Assert.That(singleStepSolution.IndexOfColumn, Is.EqualTo(0));
+      Assert.That(singleStepSolution.Value, Is.EqualTo(8));
+    }
+
+    [Test]
     public void NakedPairInRowTest()
     {
       var sudoku = new int[,]
       {
         { 9,0,0,4,0,0,1,0,0 },
-        { 0,5,6,0,0,0,2,0,0 },
-        { 0,7,8,0,0,6,0,0,0 },
+        { 0,5,6,0,0,0,0,0,0 },
+        { 0,7,8,0,0,6,2,0,0 },
         { 0,0,0,0,2,3,0,0,0 },
         { 0,0,0,0,5,0,0,7,3 },
-        { 0,0,0,0,7,0,0,8,0 },
+        { 0,0,0,0,7,0,0,0,0 },
+        { 0,0,0,0,0,0,0,8,0 },
         { 0,0,0,0,0,0,0,0,0 },
-        { 0,0,0,0,0,0,0,0,0 },
-        { 0,0,0,0,0,0,0,0,0 },
+        { 0,0,0,0,0,0,0,0,0 }
        };
 
       var solver = new DefaultSolver();
-      var sudokuPuzzle = solver.Solve(sudoku);
+      var singleStepSolution = solver.SolveSingleStep(sudoku);
 
-      Assert.That(sudokuPuzzle.Cells[0,4].Value, Is.EqualTo(8));
+      Assert.That(singleStepSolution.IndexOfRow, Is.EqualTo(0));
+      Assert.That(singleStepSolution.IndexOfColumn, Is.EqualTo(4));
+      Assert.That(singleStepSolution.Value, Is.EqualTo(8));
+    }
+
+    [Test]
+    public void NakedTripleInColumnTest()
+    {
+      // Example: http://www.sudokuwiki.org/naked_candidates
+      var sudoku = new int[,]
+      {
+        { 1,0,0,0,0,0,0,0,0 },
+        { 2,0,0,0,0,0,0,0,0 },
+        { 3,0,0,0,0,0,1,2,3 },
+        { 4,0,0,0,0,0,0,0,0 },
+        { 5,0,0,0,0,0,0,0,0 },
+        { 6,0,0,0,0,0,0,0,0 },
+        { 0,0,1,0,0,0,0,0,0 },
+        { 0,0,2,0,0,0,0,0,0 },
+        { 0,0,3,0,0,0,0,4,5 }
+       };
+
+      var solver = new DefaultSolver();
+      var singleStepSolution = solver.SolveSingleStep(sudoku);
+
+      Assert.That(singleStepSolution.IndexOfRow, Is.EqualTo(8));
+      Assert.That(singleStepSolution.IndexOfColumn, Is.EqualTo(1));
+      Assert.That(singleStepSolution.Value, Is.EqualTo(6));
+    }
+
+    [Test]
+    public void NakedTripleInRowTest()
+    {
+      // Example: http://www.sudokuwiki.org/naked_candidates
+      var sudoku = new int[,]
+      {
+        { 1,2,3,4,5,6,0,0,0 },
+        { 0,0,0,0,0,0,0,0,0 },
+        { 0,0,0,0,0,0,1,2,3 },
+        { 0,0,0,0,0,0,0,0,0 },
+        { 0,0,0,0,0,0,0,0,0 },
+        { 0,0,0,0,0,0,0,0,0 },
+        { 0,0,0,0,0,0,0,0,0 },
+        { 0,0,0,0,0,0,0,0,4 },
+        { 0,0,0,0,0,0,0,0,5 }
+       };
+
+      var solver = new DefaultSolver();
+      var singleStepSolution = solver.SolveSingleStep(sudoku);
+
+      Assert.That(singleStepSolution.IndexOfRow, Is.EqualTo(1));
+      Assert.That(singleStepSolution.IndexOfColumn, Is.EqualTo(8));
+      Assert.That(singleStepSolution.Value, Is.EqualTo(6));
     }
   }
 }

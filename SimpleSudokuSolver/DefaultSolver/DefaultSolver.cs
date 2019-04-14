@@ -60,7 +60,8 @@ namespace SimpleSudokuSolver
         HiddenSingle,
         NakedSingle,
         LockedCandidates,
-        NakedPair
+        NakedPair,
+        NakedTriple
       };
 
       foreach (var technique in solvingTechniques)
