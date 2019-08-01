@@ -77,6 +77,30 @@ namespace SimpleSudokuSolver.Test
     }
 
     [Test]
+    public void HiddenSingleTest_RowEvaluationCorrectlyDone()
+    {
+      var sudoku = new int[,]
+      {
+        { 0,0,0,0,3,0,0,8,6 },
+        { 0,0,0,0,2,0,0,4,0 },
+        { 0,0,0,0,7,8,5,2,0 },
+        { 3,7,1,8,5,6,2,9,4 },
+        { 9,0,0,1,4,2,3,7,5 },
+        { 4,0,0,3,9,7,6,1,8 },
+        { 2,0,0,7,0,3,8,5,9 },
+        { 0,3,9,2,0,5,4,6,7 },
+        { 7,0,0,9,0,4,1,3,2 },
+       };
+
+      var solver = new DefaultSolver();
+      var singleStepSolution = solver.SolveSingleStep(sudoku);
+
+      Assert.That(singleStepSolution.IndexOfRow, Is.EqualTo(2));
+      Assert.That(singleStepSolution.IndexOfColumn, Is.EqualTo(1));
+      Assert.That(singleStepSolution.Value, Is.EqualTo(9));
+    }
+
+    [Test]
     public void NakedSingleTest()
     {
       var sudoku = new int[,]

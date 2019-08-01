@@ -1,4 +1,5 @@
 ﻿using SimpleSudokuSolver.Model;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace SimpleSudokuSolver
@@ -50,26 +51,48 @@ namespace SimpleSudokuSolver
 
     private SingleStepSolution HiddenSingleCore(SudokuPuzzle sudokuPuzzle, string strategyName)
     {
+      foreach (var row in sudokuPuzzle.Rows)
+      {
+        var rowSolution = HiddenSingleCore(sudokuPuzzle, row.Cells, strategyName);
+        if (rowSolution != null)
+          return rowSolution;
+      }
+
+      foreach (var column in sudokuPuzzle.Columns)
+      {
+        var columnSolution = HiddenSingleCore(sudokuPuzzle, column.Cells, strategyName);
+        if (columnSolution != null)
+          return columnSolution;
+      }
+
       foreach (var block in sudokuPuzzle.Blocks)
       {
-        var blockCells = block.Cells.OfType<Cell>();
-        var cellsWithNoValue = blockCells.Where(x => !x.HasValue).ToArray();
+        var blockSolution = HiddenSingleCore(sudokuPuzzle, block.Cells.OfType<Cell>(), strategyName);
+        if (blockSolution != null)
+          return blockSolution;
+      }
 
-        foreach (var cellWithNoValue in cellsWithNoValue)
+      return null;
+    }
+
+    private SingleStepSolution HiddenSingleCore(SudokuPuzzle sudokuPuzzle, IEnumerable<Cell> cells, string strategyName)
+    {
+      var cellsWithNoValue = cells.Where(x => !x.HasValue).ToArray();
+
+      foreach (var cellWithNoValue in cellsWithNoValue)
+      {
+        // Possible values in cellWithNoValue
+        var possibleValues = sudokuPuzzle.PossibleCellValues.Except(cellWithNoValue.CannotBe).ToArray();
+
+        // If a possible value cannot be in any other empty cell in the block, it must be in this cellWithNoValue
+        foreach (var possibleValue in possibleValues)
         {
-          // Possible values in cellWithNoValue
-          var possibleValues = sudokuPuzzle.PossibleCellValues.Except(cellWithNoValue.CannotBe).ToArray();
-
-          // If a possible value cannot be in any other empty cell in the block, it must be in this cellWithNoValue
-          foreach (var possibleValue in possibleValues)
+          var allOtherCells = cellsWithNoValue.Except(new[] { cellWithNoValue }).ToArray();
+          if (allOtherCells.All(x => x.CannotBe.Contains(possibleValue)))
           {
-            var allOtherCells = cellsWithNoValue.Except(new[] { cellWithNoValue }).ToArray();
-            if (allOtherCells.All(x => x.CannotBe.Contains(possibleValue)))
-            {
-              var cellIndex = sudokuPuzzle.GetCellIndex(cellWithNoValue);
-              return new SingleStepSolution(cellIndex.RowIndex, cellIndex.ColumnIndex, possibleValue,
-                $"Row {cellIndex.RowIndex + 1} Column {cellIndex.ColumnIndex + 1} Value {possibleValue} [{strategyName}]");
-            }
+            var cellIndex = sudokuPuzzle.GetCellIndex(cellWithNoValue);
+            return new SingleStepSolution(cellIndex.RowIndex, cellIndex.ColumnIndex, possibleValue,
+              $"Row {cellIndex.RowIndex + 1} Column {cellIndex.ColumnIndex + 1} Value {possibleValue} [{strategyName}]");
           }
         }
       }
