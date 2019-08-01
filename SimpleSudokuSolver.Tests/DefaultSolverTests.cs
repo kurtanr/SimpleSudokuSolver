@@ -251,5 +251,30 @@ namespace SimpleSudokuSolver.Test
       Assert.That(singleStepSolution.IndexOfColumn, Is.EqualTo(8));
       Assert.That(singleStepSolution.Value, Is.EqualTo(6));
     }
+
+    [Test]
+    public void NakedTripleInBlockTest()
+    {
+      // Example: http://www.sudokuwiki.org/naked_candidates
+      var sudoku = new int[,]
+      {
+        { 2,9,4,5,1,3,0,0,6 },
+        { 6,0,0,8,4,2,3,1,9 },
+        { 3,0,0,6,9,7,2,5,4 },
+        { 0,0,0,0,5,6,0,0,0 },
+        { 0,4,0,0,8,0,0,6,0 },
+        { 0,0,0,4,7,0,0,0,0 },
+        { 7,3,0,1,6,4,0,0,5 },
+        { 9,0,0,7,3,5,0,0,1 },
+        { 4,0,0,9,2,8,6,3,7 }
+       };
+
+      var solver = new DefaultSolver();
+      var singleStepSolution = solver.SolveSingleStep(sudoku);
+
+      Assert.That(singleStepSolution.IndexOfRow, Is.EqualTo(5));
+      Assert.That(singleStepSolution.IndexOfColumn, Is.EqualTo(7));
+      Assert.That(singleStepSolution.Value, Is.EqualTo(9));
+    }
   }
 }

@@ -219,6 +219,19 @@ namespace SimpleSudokuSolver.Test
     }
 
     [Test]
+    public void SudokuPuzzleGetBlockIndexTest()
+    {
+      var sudokuPuzzle = new SudokuPuzzle(_sudoku);
+      var cell = sudokuPuzzle.Cells[4, 7];
+      Assert.That(cell.Value, Is.EqualTo(5));
+
+      var cellIndex = sudokuPuzzle.GetBlockIndex(cell);
+
+      Assert.That(cellIndex.RowIndex, Is.EqualTo(1));
+      Assert.That(cellIndex.ColumnIndex, Is.EqualTo(2));
+    }
+
+    [Test]
     public void SudokuPuzzleGetCellIndexForNonExistingCellTest()
     {
       var sudokuPuzzle = new SudokuPuzzle(_sudoku);

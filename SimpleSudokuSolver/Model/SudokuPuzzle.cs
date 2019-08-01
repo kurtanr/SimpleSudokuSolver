@@ -93,6 +93,24 @@ namespace SimpleSudokuSolver.Model
       return (-1, -1);
     }
 
+    /// <summary>
+    /// Returns zero-based row and column index of the block which contains the <paramref name="cell"/>.
+    /// Returns -1 for both row and column index if <paramref name="cell"/> is not part of the puzzle.
+    /// </summary>
+    public (int RowIndex, int ColumnIndex) GetBlockIndex(Cell cell)
+    {
+      for (int i = 0; i < NumberOfRowsOrColumnsInPuzzle; i++)
+      {
+        for (int j = 0; j < NumberOfRowsOrColumnsInPuzzle; j++)
+        {
+          if (Cells[i, j] == cell)
+            return (i / NumberOfRowsOrColumnsInBlock, j / NumberOfRowsOrColumnsInBlock);
+        }
+      }
+
+      return (-1, -1);
+    }
+
     public override string ToString() => Formatter.PuzzleToString(this);
   }
 }
