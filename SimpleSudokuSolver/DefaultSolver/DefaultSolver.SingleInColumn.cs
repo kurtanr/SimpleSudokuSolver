@@ -20,7 +20,7 @@ namespace SimpleSudokuSolver
           for (int i = 0; i < column.Cells.Length; i++)
           {
             if (column.Cells[i] == cellsWithNoValue[0])
-              return new SingleStepSolution(i, column.ColumnIndex, value, $"Row {i + 1} Column {column.ColumnIndex + 1} Value {value} [Single in Column]");
+              return new SingleStepSolution(i, column.ColumnIndex, value, "Single in Column");
           }
         }
       }

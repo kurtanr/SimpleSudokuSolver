@@ -20,8 +20,7 @@ namespace SimpleSudokuSolver
           var cellWithNoValue = blockCells.Where(x => !x.HasValue).Single();
 
           var cellIndex = sudokuPuzzle.GetCellIndex(cellWithNoValue);
-          return new SingleStepSolution(cellIndex.RowIndex, cellIndex.ColumnIndex, value,
-            $"Row {cellIndex.RowIndex + 1} Column {cellIndex.ColumnIndex + 1} Value {value} [Single in Block]");
+          return new SingleStepSolution(cellIndex.RowIndex, cellIndex.ColumnIndex, value, "Single in Block");
         }
       }
 

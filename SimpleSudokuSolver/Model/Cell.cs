@@ -20,18 +20,16 @@ namespace SimpleSudokuSolver.Model
       {
         Validation.ValidateCellValue(value);
         _value = value;
+
+        CanBe.Clear();
       }
     }
 
     /// <summary>
     /// List of values which are allowed in this cell.
+    /// Empty if cell has a value.
     /// </summary>
     public List<int> CanBe { get; } = new List<int>();
-
-    /// <summary>
-    /// List of values which are not allowed in this cell.
-    /// </summary>
-    public List<int> CannotBe { get; } = new List<int>();
 
     public bool HasValue => _value > 0;
 

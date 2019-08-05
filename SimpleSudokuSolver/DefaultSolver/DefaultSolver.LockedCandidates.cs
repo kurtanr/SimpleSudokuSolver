@@ -9,7 +9,7 @@ namespace SimpleSudokuSolver
   {
     private SingleStepSolution LockedCandidates(SudokuPuzzle sudokuPuzzle)
     {
-      bool reducedNumberOfCandidates = false;
+      var eliminations = new List<SingleStepSolution.Candidate>();
 
       foreach (var block in sudokuPuzzle.Blocks)
       {
@@ -36,14 +36,9 @@ namespace SimpleSudokuSolver
 
             if (cell.CanBe.Contains(cellValue))
             {
-              reducedNumberOfCandidates = true;
               cell.CanBe.Remove(cellValue);
-            }
-
-            if (!cell.CannotBe.Contains(cellValue))
-            {
-              reducedNumberOfCandidates = true;
-              cell.CannotBe.Add(cellValue);
+              var (RowIndex, ColumnIndex) = sudokuPuzzle.GetCellIndex(cell);
+              eliminations.Add(new SingleStepSolution.Candidate(RowIndex, ColumnIndex, cellValue));
             }
           }
         }
@@ -59,25 +54,17 @@ namespace SimpleSudokuSolver
 
             if (cell.CanBe.Contains(cellValue))
             {
-              reducedNumberOfCandidates = true;
               cell.CanBe.Remove(cellValue);
-            }
-
-            if (!cell.CannotBe.Contains(cellValue))
-            {
-              reducedNumberOfCandidates = true;
-              cell.CannotBe.Add(cellValue);
+              var (RowIndex, ColumnIndex) = sudokuPuzzle.GetCellIndex(cell);
+              eliminations.Add(new SingleStepSolution.Candidate(RowIndex, ColumnIndex, cellValue));
             }
           }
         }
       }
 
-      if (!reducedNumberOfCandidates)
-        return null;
-
-      return
-        HiddenSingleCore(sudokuPuzzle, "HiddenSingle+LockedCandidates") ??
-        NakedSingleCore(sudokuPuzzle, "NakedSingle+LockedCandidates");
+      return eliminations.Count > 0 ?
+        new SingleStepSolution(eliminations.ToArray(), "Locked Candidates") :
+        null;
     }
 
     /// <summary>

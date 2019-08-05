@@ -13,6 +13,7 @@ namespace SimpleSudokuSolver.UI.ViewModel
     public ICommand LoadGameCommand { get; }
     public ICommand SaveGameCommand { get; }
     public ICommand SolveGameCommand { get; }
+    public ICommand UndoGameStepCommand { get; }
     public ICommand SolveGameStepCommand { get; }
     public ICommand ExitGameCommand { get; }
 
@@ -92,6 +93,8 @@ namespace SimpleSudokuSolver.UI.ViewModel
       LoadGameCommand = new RelayCommand(ExecuteLoadGameCommand);
       SaveGameCommand = new RelayCommand(ExecuteSaveGameCommand, () => SudokuPuzzle != null);
       SolveGameCommand = new RelayCommand(ExecuteSolveGameCommand, () => SudokuPuzzle != null);
+      UndoGameStepCommand = new RelayCommand(ExecuteUndoGameStepCommand,
+        () => SudokuPuzzle != null && SudokuPuzzle.Steps.Length > 0);
       SolveGameStepCommand = new RelayCommand(ExecuteSolveGameStepCommand, () => SudokuPuzzle != null);
       ExitGameCommand = new RelayCommand(ExecuteExitGameCommand);
 
@@ -150,6 +153,23 @@ namespace SimpleSudokuSolver.UI.ViewModel
       UpdateStatusMessage();
     }
 
+    private void ExecuteUndoGameStepCommand()
+    {
+      var solution = SudokuPuzzle.UndoLastSingleStepSolution();
+      if (solution == null)
+        return;
+
+      if (solution.Result != null)
+      {
+        LastUpdatedCellIndex = new Tuple<int, int>(solution.Result.IndexOfRow,
+          solution.Result.IndexOfColumn);
+      }
+
+      AppendMessage($"UNDO: {solution.SolutionDescription}");
+      UpdateBoard();
+      UpdateStatusMessage();
+    }
+
     private void ExecuteSolveGameStepCommand()
     {
       var sudoku = SudokuPuzzle.ToIntArray();
@@ -157,17 +177,23 @@ namespace SimpleSudokuSolver.UI.ViewModel
       if (_solver.IsSolved(sudoku))
         return;
 
-      var singleStepSolution = _solver.SolveSingleStep(sudoku);
+      var singleStepSolution = _solver.SolveSingleStep(SudokuPuzzle);
       if (singleStepSolution == null)
       {
         AppendMessage("Cannot solve puzzle step");
       }
       else
       {
-        sudoku[singleStepSolution.IndexOfRow, singleStepSolution.IndexOfColumn] = singleStepSolution.Value;
-        LastUpdatedCellIndex = new Tuple<int, int>(singleStepSolution.IndexOfRow, singleStepSolution.IndexOfColumn);
-        SudokuPuzzle = new SudokuPuzzle(sudoku);
+        SudokuPuzzle.ApplySingleStepSolution(singleStepSolution);
+
+        if (singleStepSolution.Result != null)
+        {
+          LastUpdatedCellIndex = new Tuple<int, int>(singleStepSolution.Result.IndexOfRow,
+            singleStepSolution.Result.IndexOfColumn);
+        }
+
         AppendMessage(singleStepSolution.SolutionDescription);
+        UpdateBoard();
       }
 
       UpdateStatusMessage();
@@ -176,6 +202,14 @@ namespace SimpleSudokuSolver.UI.ViewModel
     private void ExecuteExitGameCommand()
     {
       ExitGame?.Invoke();
+    }
+
+    private void UpdateBoard()
+    {
+      // to update UI, SudokuPuzzle property must change (ugly solution)
+      var sudokuPuzzle = SudokuPuzzle;
+      SudokuPuzzle = null;
+      SudokuPuzzle = sudokuPuzzle;
     }
 
     public void AppendMessage(string message)

@@ -1,4 +1,7 @@
-﻿using NUnit.Framework;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using NUnit.Framework;
 using SimpleSudokuSolver.Model;
 
 namespace SimpleSudokuSolver.Test
@@ -68,12 +71,7 @@ namespace SimpleSudokuSolver.Test
         { 0,0,0,0,0,0,0,0,0 },
        };
 
-      var solver = new DefaultSolver();
-      var singleStepSolution = solver.SolveSingleStep(sudoku);
-
-      Assert.That(singleStepSolution.IndexOfRow, Is.EqualTo(4));
-      Assert.That(singleStepSolution.IndexOfColumn, Is.EqualTo(1));
-      Assert.That(singleStepSolution.Value, Is.EqualTo(2));
+      ValidateResult(sudoku, 4, 1, 2, "Hidden Single");
     }
 
     [Test]
@@ -92,12 +90,7 @@ namespace SimpleSudokuSolver.Test
         { 7,0,0,9,0,4,1,3,2 },
        };
 
-      var solver = new DefaultSolver();
-      var singleStepSolution = solver.SolveSingleStep(sudoku);
-
-      Assert.That(singleStepSolution.IndexOfRow, Is.EqualTo(2));
-      Assert.That(singleStepSolution.IndexOfColumn, Is.EqualTo(1));
-      Assert.That(singleStepSolution.Value, Is.EqualTo(9));
+      ValidateResult(sudoku, 2, 1, 9, "Hidden Single");
     }
 
     [Test]
@@ -116,12 +109,7 @@ namespace SimpleSudokuSolver.Test
         { 0,0,0,0,0,0,0,0,0 },
        };
 
-      var solver = new DefaultSolver();
-      var singleStepSolution = solver.SolveSingleStep(sudoku);
-
-      Assert.That(singleStepSolution.IndexOfRow, Is.EqualTo(1));
-      Assert.That(singleStepSolution.IndexOfColumn, Is.EqualTo(4));
-      Assert.That(singleStepSolution.Value, Is.EqualTo(3));
+      ValidateResult(sudoku, 1, 4, 3, "Naked Single");
     }
 
     [Test]
@@ -194,12 +182,7 @@ namespace SimpleSudokuSolver.Test
         { 0,0,0,0,3,0,0,0,0 }
        };
 
-      var solver = new DefaultSolver();
-      var singleStepSolution = solver.SolveSingleStep(sudoku);
-
-      Assert.That(singleStepSolution.IndexOfRow, Is.EqualTo(4));
-      Assert.That(singleStepSolution.IndexOfColumn, Is.EqualTo(0));
-      Assert.That(singleStepSolution.Value, Is.EqualTo(8));
+      ValidateResult(sudoku, 4, 0, 8, "Naked Pair");
     }
 
     [Test]
@@ -218,12 +201,7 @@ namespace SimpleSudokuSolver.Test
         { 0,0,0,0,0,0,0,0,0 }
        };
 
-      var solver = new DefaultSolver();
-      var singleStepSolution = solver.SolveSingleStep(sudoku);
-
-      Assert.That(singleStepSolution.IndexOfRow, Is.EqualTo(0));
-      Assert.That(singleStepSolution.IndexOfColumn, Is.EqualTo(4));
-      Assert.That(singleStepSolution.Value, Is.EqualTo(8));
+      ValidateResult(sudoku, 0, 4, 8, "Naked Pair");
     }
 
     [Test]
@@ -243,12 +221,7 @@ namespace SimpleSudokuSolver.Test
         { 0,0,3,0,0,0,0,4,5 }
        };
 
-      var solver = new DefaultSolver();
-      var singleStepSolution = solver.SolveSingleStep(sudoku);
-
-      Assert.That(singleStepSolution.IndexOfRow, Is.EqualTo(8));
-      Assert.That(singleStepSolution.IndexOfColumn, Is.EqualTo(1));
-      Assert.That(singleStepSolution.Value, Is.EqualTo(6));
+      ValidateResult(sudoku, 8, 1, 6, "Naked Triple");
     }
 
     [Test]
@@ -268,12 +241,7 @@ namespace SimpleSudokuSolver.Test
         { 0,0,0,0,0,0,0,0,5 }
        };
 
-      var solver = new DefaultSolver();
-      var singleStepSolution = solver.SolveSingleStep(sudoku);
-
-      Assert.That(singleStepSolution.IndexOfRow, Is.EqualTo(1));
-      Assert.That(singleStepSolution.IndexOfColumn, Is.EqualTo(8));
-      Assert.That(singleStepSolution.Value, Is.EqualTo(6));
+      ValidateResult(sudoku, 1, 8, 6, "Naked Triple");
     }
 
     [Test]
@@ -293,12 +261,31 @@ namespace SimpleSudokuSolver.Test
         { 4,0,0,9,2,8,6,3,7 }
        };
 
-      var solver = new DefaultSolver();
-      var singleStepSolution = solver.SolveSingleStep(sudoku);
+      ValidateResult(sudoku, 5, 7, 9, "Naked Triple");
+    }
 
-      Assert.That(singleStepSolution.IndexOfRow, Is.EqualTo(5));
-      Assert.That(singleStepSolution.IndexOfColumn, Is.EqualTo(7));
-      Assert.That(singleStepSolution.Value, Is.EqualTo(9));
+    private void ValidateResult(int[,] sudoku, int rowIndex, int columnIndex, int value, string strategyName)
+    {
+      var solver = new DefaultSolver();
+      var sudokuPuzzle = new SudokuPuzzle(sudoku);
+      var steps = new List<SingleStepSolution>();
+
+      SingleStepSolution singleStepSolution;
+      do
+      {
+        singleStepSolution = solver.SolveSingleStep(sudokuPuzzle);
+        sudokuPuzzle.ApplySingleStepSolution(singleStepSolution);
+        steps.Add(singleStepSolution);
+      } while (singleStepSolution?.Eliminations != null);
+
+      Assert.NotNull(singleStepSolution, "Cannot find solution");
+
+      var strategies = steps.Select(x => x.Strategy).ToArray();
+
+      Assert.That(strategies.Contains(strategyName));
+      Assert.That(singleStepSolution.Result.IndexOfRow, Is.EqualTo(rowIndex));
+      Assert.That(singleStepSolution.Result.IndexOfColumn, Is.EqualTo(columnIndex));
+      Assert.That(singleStepSolution.Result.Value, Is.EqualTo(value));
     }
   }
 }

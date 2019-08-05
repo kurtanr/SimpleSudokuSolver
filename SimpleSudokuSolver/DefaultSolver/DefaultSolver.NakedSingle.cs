@@ -1,4 +1,5 @@
 ﻿using SimpleSudokuSolver.Model;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace SimpleSudokuSolver
@@ -7,62 +8,41 @@ namespace SimpleSudokuSolver
   {
     private SingleStepSolution NakedSingle(SudokuPuzzle sudokuPuzzle)
     {
-      int[] possibleCellValuesBasedOnRow, possibleCellValuesBasedOnColumn, possibleCellValuesBasedOnBlock;
-
       foreach (var row in sudokuPuzzle.Rows)
       {
-        var cellsWithValue = row.Cells.Where(x => x.HasValue).ToArray();
-        var cellsWithNoValue = row.Cells.Where(x => !x.HasValue).ToArray();
-        possibleCellValuesBasedOnRow = sudokuPuzzle.PossibleCellValues.Except(cellsWithValue.Select(x => x.Value)).ToArray();
-
-        foreach (var cell in cellsWithNoValue)
-        {
-          cell.CanBe.AddRange(possibleCellValuesBasedOnRow);
-        }
+        var rowSolution = NakedSingleCore(sudokuPuzzle, row.Cells);
+        if (rowSolution != null)
+          return rowSolution;
       }
 
       foreach (var column in sudokuPuzzle.Columns)
       {
-        var cellsWithValue = column.Cells.Where(x => x.HasValue).ToArray();
-        var cellsWithNoValue = column.Cells.Where(x => !x.HasValue).ToArray();
-        possibleCellValuesBasedOnColumn = sudokuPuzzle.PossibleCellValues.Except(cellsWithValue.Select(x => x.Value)).ToArray();
-
-        foreach (var cell in cellsWithNoValue)
-        {
-          var possibleValues = cell.CanBe.Intersect(possibleCellValuesBasedOnColumn).ToArray();
-          cell.CanBe.Clear();
-          cell.CanBe.AddRange(possibleValues);
-        }
+        var columnSolution = NakedSingleCore(sudokuPuzzle, column.Cells);
+        if (columnSolution != null)
+          return columnSolution;
       }
 
       foreach (var block in sudokuPuzzle.Blocks)
       {
-        var blockCells = block.Cells.OfType<Cell>();
-        var cellsWithValue = blockCells.Where(x => x.HasValue).ToArray();
-        var cellsWithNoValue = blockCells.Where(x => !x.HasValue).ToArray();
-        possibleCellValuesBasedOnBlock = sudokuPuzzle.PossibleCellValues.Except(cellsWithValue.Select(x => x.Value)).ToArray();
-
-        foreach (var cell in cellsWithNoValue)
-        {
-          var possibleValues = cell.CanBe.Intersect(possibleCellValuesBasedOnBlock).ToArray();
-          cell.CanBe.Clear();
-          cell.CanBe.AddRange(possibleValues);
-        }
+        var blockSolution = NakedSingleCore(sudokuPuzzle, block.Cells.OfType<Cell>());
+        if (blockSolution != null)
+          return blockSolution;
       }
 
-      return NakedSingleCore(sudokuPuzzle, "NakedSingle");
+      return null;
     }
 
-    private SingleStepSolution NakedSingleCore(SudokuPuzzle sudokuPuzzle, string strategyName)
+    private SingleStepSolution NakedSingleCore(SudokuPuzzle sudokuPuzzle, IEnumerable<Cell> cells)
     {
-      for (int i = 0; i < sudokuPuzzle.NumberOfRowsOrColumnsInPuzzle; i++)
+      var cellsWithNoValue = cells.Where(x => !x.HasValue).ToArray();
+
+      // if cell can contain only one value, then it must contain that value
+      foreach (var cell in cellsWithNoValue)
       {
-        for (int j = 0; j < sudokuPuzzle.NumberOfRowsOrColumnsInPuzzle; j++)
+        if (cell.CanBe.Count == 1)
         {
-          var cell = sudokuPuzzle.Cells[i, j];
-          if (!cell.HasValue && cell.CanBe.Count == 1)
-            return new SingleStepSolution(i, j, cell.CanBe[0],
-              $"Row {i + 1} Column {j + 1} Value {cell.CanBe[0]} [{strategyName}]");
+          var (RowIndex, ColumnIndex) = sudokuPuzzle.GetCellIndex(cell);
+          return new SingleStepSolution(RowIndex, ColumnIndex, cell.CanBe.Single(), "Naked Single");
         }
       }
 

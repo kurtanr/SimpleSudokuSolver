@@ -13,6 +13,7 @@
         <KeyBinding Modifiers="Control" Key="L" Command="{Binding LoadGameCommand}" />
         <KeyBinding Modifiers="Control" Key="S" Command="{Binding SaveGameCommand}" />
         <KeyBinding Key="F5" Command="{Binding SolveGameCommand}" />
+        <KeyBinding Key="F9" Command="{Binding UndoGameStepCommand}" />
         <KeyBinding Key="F10" Command="{Binding SolveGameStepCommand}" />
     </Window.InputBindings>
     <DockPanel>
@@ -23,6 +24,7 @@
                 <MenuItem Header="_Save" Command="{Binding SaveGameCommand}" InputGestureText="Ctrl+S" />
                 <Separator />
                 <MenuItem Header="S_olve" Command="{Binding SolveGameCommand}" InputGestureText="F5" />
+                <MenuItem Header="_Back one step" Command="{Binding UndoGameStepCommand}" InputGestureText="F9" />
                 <MenuItem Header="Solve s_tep" Command="{Binding SolveGameStepCommand}" InputGestureText="F10" />
                 <Separator />
                 <MenuItem Header="_Exit" Command="{Binding ExitGameCommand}" InputGestureText="Alt+F4" />

@@ -90,9 +90,11 @@ namespace SimpleSudokuSolver.UI
         return;
       }
 
-      _activeCell.Value = enteredValue.ToString();
+      var solution = new SingleStepSolution(cellIndex.RowIndex, cellIndex.ColumnIndex, enteredValue, "Entered by user");
+      SudokuPuzzle.ApplySingleStepSolution(solution);
+      _activeCell.NotifyCellValueChanged();
       SetSelection(_activeCell);
-      mainViewModel.AppendMessage($"Row {cellIndex.RowIndex + 1} Column {cellIndex.ColumnIndex + 1} Value {enteredValue} [Entered by user]");
+      mainViewModel.AppendMessage(solution.SolutionDescription);
       mainViewModel.UpdateStatusMessage();
     }
 
@@ -109,6 +111,9 @@ namespace SimpleSudokuSolver.UI
 
     private void BindPuzzle()
     {
+      if (SudokuPuzzle == null)
+        return;
+
       _cellViewModels.Clear();
       SetActiveCell(null);
 

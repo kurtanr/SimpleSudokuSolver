@@ -1,4 +1,5 @@
 ﻿using SimpleSudokuSolver.Model;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace SimpleSudokuSolver
@@ -7,41 +8,33 @@ namespace SimpleSudokuSolver
   {
     private SingleStepSolution NakedPair(SudokuPuzzle sudokuPuzzle)
     {
-      int reducedNumberOfCandidates = 0;
+      var eliminations = new List<SingleStepSolution.Candidate>();
 
       foreach (var row in sudokuPuzzle.Rows)
       {
-        var cellsWithNoValue = row.Cells.Where(x => !x.HasValue).ToArray();
-        if (NakedPairCore(cellsWithNoValue))
-          reducedNumberOfCandidates++;
+        eliminations.AddRange(GetEliminationsPair(row.Cells, sudokuPuzzle));
       }
 
       foreach (var column in sudokuPuzzle.Columns)
       {
-        var cellsWithNoValue = column.Cells.Where(x => !x.HasValue).ToArray();
-        if (NakedPairCore(cellsWithNoValue))
-          reducedNumberOfCandidates++;
+        eliminations.AddRange(GetEliminationsPair(column.Cells, sudokuPuzzle));
       }
 
       foreach (var block in sudokuPuzzle.Blocks)
       {
-        var cellsWithNoValue = block.Cells.OfType<Cell>().Where(x => !x.HasValue).ToArray();
-        if (NakedPairCore(cellsWithNoValue))
-          reducedNumberOfCandidates++;
+        eliminations.AddRange(GetEliminationsPair(block.Cells.OfType<Cell>().ToArray(), sudokuPuzzle));
       }
 
-      if (reducedNumberOfCandidates == 0)
-        return null;
-
-      return
-        HiddenSingleCore(sudokuPuzzle, "HiddenSingle+NakedPair") ??
-        NakedSingleCore(sudokuPuzzle, "NakedSingle+NakedPair");
+      return eliminations.Count > 0 ?
+        new SingleStepSolution(eliminations.ToArray(), "Naked Pair") :
+        null;
     }
 
-    private bool NakedPairCore(Cell[] cellsWithNoValue)
+    private IEnumerable<SingleStepSolution.Candidate> GetEliminationsPair(Cell[] cells, SudokuPuzzle sudokuPuzzle)
     {
-      bool reducedNumberOfCandidates = false;
+      var cellsWithNoValue = cells.Where(x => !x.HasValue).ToArray();
       var nakedPairCandidates = cellsWithNoValue.Where(x => x.CanBe.Count == 2).ToArray();
+      var eliminations = new List<SingleStepSolution.Candidate>();
 
       foreach (var nakedPairCandidate in nakedPairCandidates)
       {
@@ -62,12 +55,8 @@ namespace SimpleSudokuSolver
                 if (cell.CanBe.Contains(candidate))
                 {
                   cell.CanBe.Remove(candidate);
-                  reducedNumberOfCandidates = true;
-                }
-                if (!cell.CannotBe.Contains(candidate))
-                {
-                  cell.CannotBe.Add(candidate);
-                  reducedNumberOfCandidates = true;
+                  var (RowIndex, ColumnIndex) = sudokuPuzzle.GetCellIndex(cell);
+                  eliminations.Add(new SingleStepSolution.Candidate(RowIndex, ColumnIndex, candidate));
                 }
               }
             }
@@ -75,7 +64,7 @@ namespace SimpleSudokuSolver
         }
       }
 
-      return reducedNumberOfCandidates;
+      return eliminations;
     }
   }
 }

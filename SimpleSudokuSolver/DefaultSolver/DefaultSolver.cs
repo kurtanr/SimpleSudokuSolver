@@ -25,7 +25,7 @@ namespace SimpleSudokuSolver
 
       while (!IsSolved(sudokuPuzzle))
       {
-        var solution = SolveSingleStep(sudoku);
+        var solution = SolveSingleStep(sudokuPuzzle);
         if (solution == null)
         {
           // Sudoku cannot be solved :(
@@ -34,9 +34,8 @@ namespace SimpleSudokuSolver
         }
         else
         {
-          sudoku[solution.IndexOfRow, solution.IndexOfColumn] = solution.Value;
+          sudokuPuzzle.ApplySingleStepSolution(solution);
           stepsList.Add(solution);
-          sudokuPuzzle = new SudokuPuzzle(sudoku);
         }
       }
 
@@ -45,9 +44,8 @@ namespace SimpleSudokuSolver
     }
 
     /// <inheritdoc />
-    public SingleStepSolution SolveSingleStep(int[,] sudoku)
+    public SingleStepSolution SolveSingleStep(SudokuPuzzle sudokuPuzzle)
     {
-      var sudokuPuzzle = new SudokuPuzzle(sudoku);
       if (IsSolved(sudokuPuzzle))
         return null;
 
@@ -66,6 +64,10 @@ namespace SimpleSudokuSolver
 
       foreach (var technique in solvingTechniques)
       {
+        var elimination = CandidateElimination(sudokuPuzzle);
+        if (elimination != null)
+          return elimination;
+
         var solution = technique(sudokuPuzzle);
         if (solution != null)
           return solution;

@@ -18,10 +18,13 @@ namespace SimpleSudokuSolver
     SudokuPuzzle Solve(int[,] sudoku, out SingleStepSolution[] steps);
 
     /// <summary>
-    /// Solves single cell in a sudoku puzzle.
+    /// Progresses solution of the sudoku puzzle by one step.
+    /// Single step solution can be:
+    /// - promotion of candidate value to result value (<see cref="SingleStepSolution.Result"/>)
+    /// - elimination of candidate values (<see cref="SingleStepSolution.Eliminations"/>)
     /// </summary>
-    /// <returns>null if no cell can be solved.</returns>
-    SingleStepSolution SolveSingleStep(int[,] sudoku);
+    /// <returns>null if no progress can be made.</returns>
+    SingleStepSolution SolveSingleStep(SudokuPuzzle sudokuPuzzle);
 
     /// <summary>
     /// Returns whether the puzzle is solved or not.

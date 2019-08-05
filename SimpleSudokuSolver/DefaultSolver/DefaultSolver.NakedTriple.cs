@@ -9,36 +9,32 @@ namespace SimpleSudokuSolver
   {
     private SingleStepSolution NakedTriple(SudokuPuzzle sudokuPuzzle)
     {
-      int reducedNumberOfCandidates = 0;
+      var eliminations = new List<SingleStepSolution.Candidate>();
 
       foreach (var row in sudokuPuzzle.Rows)
       {
-        var cellsWithNoValue = row.Cells.Where(x => !x.HasValue).ToArray();
-        if (NakedTripleCore(cellsWithNoValue, sudokuPuzzle))
-          reducedNumberOfCandidates++;
+        eliminations.AddRange(GetEliminationsTriple(row.Cells, sudokuPuzzle));
       }
 
       foreach (var column in sudokuPuzzle.Columns)
       {
-        var cellsWithNoValue = column.Cells.Where(x => !x.HasValue).ToArray();
-        if (NakedTripleCore(cellsWithNoValue, sudokuPuzzle))
-          reducedNumberOfCandidates++;
+        eliminations.AddRange(GetEliminationsTriple(column.Cells, sudokuPuzzle));
       }
 
-      if (reducedNumberOfCandidates == 0)
-        return null;
-
-      return
-        HiddenSingleCore(sudokuPuzzle, "HiddenSingle+NakedTriple") ??
-        NakedSingleCore(sudokuPuzzle, "NakedSingle+NakedTriple");
+      return eliminations.Count > 0 ?
+        new SingleStepSolution(eliminations.ToArray(), "Naked Triple") :
+        null;
     }
 
-    private bool NakedTripleCore(Cell[] cellsWithNoValue, SudokuPuzzle sudokuPuzzle)
+    private IEnumerable<SingleStepSolution.Candidate> GetEliminationsTriple(Cell[] cells, SudokuPuzzle sudokuPuzzle)
     {
+      var cellsWithNoValue = cells.Where(x => !x.HasValue).ToArray();
+      var eliminations = new List<SingleStepSolution.Candidate>();
+
       // we need to have at least 3 cells which have 2 or 3 possible potential values
       var nakedTripleCandidates = cellsWithNoValue.Where(x => x.CanBe.Count == 2 || x.CanBe.Count == 3).ToArray();
       if (nakedTripleCandidates.Length < 3)
-        return false;
+        return eliminations;
 
       List<Tuple<Cell, Cell, Cell>> nakedTriples = new List<Tuple<Cell, Cell, Cell>>();
 
@@ -69,8 +65,6 @@ namespace SimpleSudokuSolver
         }
       }
 
-      bool reducedNumberOfCandidates = false;
-
       if (nakedTriples.Count() > 0)
       {
         foreach (var nakedTriple in nakedTriples)
@@ -78,8 +72,8 @@ namespace SimpleSudokuSolver
           var distinctPotentialCellValuesInCandidates = GetDistinctPotentialCellValuesInCandidates(
             nakedTriple.Item1.CanBe, nakedTriple.Item2.CanBe, nakedTriple.Item3.CanBe);
 
-          reducedNumberOfCandidates = TryReduceNumberOfCandidatesUsingNakedTriple(
-            nakedTriple, distinctPotentialCellValuesInCandidates, cellsWithNoValue);
+          eliminations.AddRange(GetEliminationsTripleCore(
+            nakedTriple, distinctPotentialCellValuesInCandidates, cellsWithNoValue, sudokuPuzzle));
 
           // if all three members of a naked triple belong to the same block, their values can be removed 
           // as potential values from all the other cells in the block
@@ -92,18 +86,19 @@ namespace SimpleSudokuSolver
             var block = sudokuPuzzle.Blocks[item1BlockIndex.RowIndex, item1BlockIndex.ColumnIndex];
             var cellWithNoValueInBlock = block.Cells.OfType<Cell>().Where(x => !x.HasValue).ToArray();
 
-            reducedNumberOfCandidates = reducedNumberOfCandidates || TryReduceNumberOfCandidatesUsingNakedTriple(
-              nakedTriple, distinctPotentialCellValuesInCandidates, cellWithNoValueInBlock); ;
+            eliminations.AddRange(GetEliminationsTripleCore(
+              nakedTriple, distinctPotentialCellValuesInCandidates, cellWithNoValueInBlock, sudokuPuzzle));
           }
         }
       }
 
-      return reducedNumberOfCandidates;
+      return eliminations;
     }
 
-    private bool TryReduceNumberOfCandidatesUsingNakedTriple(Tuple<Cell, Cell, Cell> nakedTriple, int[] distinctPotentialCellValuesInCandidates, Cell[] cellsWithNoValue)
+    private IEnumerable<SingleStepSolution.Candidate> GetEliminationsTripleCore(
+      Tuple<Cell, Cell, Cell> nakedTriple, int[] distinctPotentialCellValuesInCandidates, Cell[] cellsWithNoValue, SudokuPuzzle sudokuPuzzle)
     {
-      bool reducedNumberOfCandidates = false;
+      var eliminations = new List<SingleStepSolution.Candidate>();
 
       foreach (var cellWithNoValue in cellsWithNoValue)
       {
@@ -116,16 +111,16 @@ namespace SimpleSudokuSolver
         {
           foreach (var finalItem in finalItems)
           {
-            cellWithNoValue.CanBe.Remove(finalItem);
-            if (!cellWithNoValue.CannotBe.Contains(finalItem))
+            if (cellWithNoValue.CanBe.Contains(finalItem))
             {
-              cellWithNoValue.CannotBe.Add(finalItem);
+              cellWithNoValue.CanBe.Remove(finalItem);
+              var (RowIndex, ColumnIndex) = sudokuPuzzle.GetCellIndex(cellWithNoValue);
+              eliminations.Add(new SingleStepSolution.Candidate(RowIndex, ColumnIndex, finalItem));
             }
           }
-          reducedNumberOfCandidates = true;
         }
       }
-      return reducedNumberOfCandidates;
+      return eliminations;
     }
 
     private int[] GetDistinctPotentialCellValuesInCandidates(params IEnumerable<int>[] items)

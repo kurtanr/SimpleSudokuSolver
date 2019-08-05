@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SimpleSudokuSolver.Model
 {
@@ -9,9 +11,13 @@ namespace SimpleSudokuSolver.Model
     public Column[] Columns { get; }
     public Block[,] Blocks { get; }
     public int[] PossibleCellValues { get; }
+    public SingleStepSolution[] Steps => _steps.Select(x => x.Item1).ToArray();
 
     public int NumberOfRowsOrColumnsInPuzzle { get; }
     public int NumberOfRowsOrColumnsInBlock { get; }
+
+    private readonly List<Tuple<SingleStepSolution, int[]>> _steps =
+      new List<Tuple<SingleStepSolution, int[]>>();
 
     public SudokuPuzzle(int[,] sudoku)
     {
@@ -39,7 +45,13 @@ namespace SimpleSudokuSolver.Model
             Columns[j] = new Column(j, NumberOfRowsOrColumnsInPuzzle);
           }
 
-          Cells[i, j] = new Cell(sudoku[i, j]);
+          var cell = new Cell(sudoku[i, j]);
+          if (!cell.HasValue)
+          {
+            cell.CanBe.AddRange(PossibleCellValues);
+          }
+
+          Cells[i, j] = cell;
           Columns[j].Cells[i] = Cells[i, j];
           Rows[i].Cells[j] = Cells[i, j];
 
@@ -55,6 +67,76 @@ namespace SimpleSudokuSolver.Model
           Blocks[blockRowIndex, blockColumnIndex].Cells[i % NumberOfRowsOrColumnsInBlock, j % NumberOfRowsOrColumnsInBlock] = Cells[i, j];
         }
       }
+    }
+
+    /// <summary>
+    /// Applies <paramref name="singleStepSolution"/> to the puzzle.
+    /// </summary>
+    /// <param name="singleStepSolution">Solution which is applied to the puzzle.</param>
+    public void ApplySingleStepSolution(SingleStepSolution singleStepSolution)
+    {
+      if (singleStepSolution.Result == null &&
+        (singleStepSolution.Eliminations == null || singleStepSolution.Eliminations.Length == 0))
+        return;
+
+      int[] oldCanBe = new int[] { };
+
+      if (singleStepSolution.Result != null)
+      {
+        var cell = Cells[singleStepSolution.Result.IndexOfRow, singleStepSolution.Result.IndexOfColumn];
+        oldCanBe = cell.CanBe.ToArray();
+        cell.Value = singleStepSolution.Result.Value;
+      }
+      if (singleStepSolution.Eliminations != null)
+      {
+        foreach (var elimination in singleStepSolution.Eliminations)
+        {
+          Cells[elimination.IndexOfRow, elimination.IndexOfColumn].CanBe.Remove(elimination.Value);
+        }
+      }
+
+      _steps.Add(new Tuple<SingleStepSolution, int[]>(singleStepSolution, oldCanBe.ToArray()));
+    }
+
+    /// <summary>
+    /// Undoes the last applied <see cref="SingleStepSolution"/>.
+    /// </summary>
+    /// <returns><see cref="SingleStepSolution"/> which was undone, or null if nothing was undone.</returns>
+    public SingleStepSolution UndoLastSingleStepSolution()
+    {
+      if (_steps.Count == 0)
+        return null;
+
+      var step = _steps.Last();
+      var singleStepSolution = step.Item1;
+
+      if (singleStepSolution.Result == null &&
+        (singleStepSolution.Eliminations == null || singleStepSolution.Eliminations.Length == 0))
+        return null;
+
+      if (singleStepSolution.Result != null)
+      {
+        var cell = Cells[singleStepSolution.Result.IndexOfRow, singleStepSolution.Result.IndexOfColumn];
+        cell.Value = 0;
+        cell.CanBe.AddRange(step.Item2);
+      }
+      if (singleStepSolution.Eliminations != null)
+      {
+        foreach (var elimination in singleStepSolution.Eliminations)
+        {
+          Cells[elimination.IndexOfRow, elimination.IndexOfColumn].CanBe.Add(elimination.Value);
+        }
+
+        // cell.CanBe is now no longer sorted
+        foreach(var cell in Cells.OfType<Cell>())
+        {
+          cell.CanBe.Sort();
+        }
+      }
+
+      _steps.Remove(step);
+
+      return singleStepSolution;
     }
 
     /// <summary>

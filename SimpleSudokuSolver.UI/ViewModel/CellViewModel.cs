@@ -1,4 +1,5 @@
 ﻿using SimpleSudokuSolver.Model;
+using System;
 using System.ComponentModel;
 
 namespace SimpleSudokuSolver.UI.ViewModel
@@ -27,17 +28,13 @@ namespace SimpleSudokuSolver.UI.ViewModel
       }
     }
 
+    public string Tooltip => Cell.CanBe.Count > 0 ? string.Join(",", Cell.CanBe) : null;
+
     public Cell Cell { get; }
 
     public string Value
     {
       get { return Cell.Value != 0 ? Cell.Value.ToString() : string.Empty; }
-      set
-      {
-        // Must be validated before setting
-        Cell.Value = int.Parse(value);
-        OnPropertyChanged(nameof(Value));
-      }
     }
 
     public CellViewModel(Cell cell)
@@ -50,6 +47,11 @@ namespace SimpleSudokuSolver.UI.ViewModel
     private void OnPropertyChanged(string propertyName)
     {
       PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+
+    public void NotifyCellValueChanged()
+    {
+      OnPropertyChanged(nameof(Value));
     }
   }
 }

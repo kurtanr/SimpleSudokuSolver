@@ -28,7 +28,6 @@ namespace SimpleSudokuSolver.Test
       Assert.That(emptyCell.Value, Is.EqualTo(0));
       Assert.That(emptyCell.HasValue, Is.False);
       Assert.That(emptyCell.CanBe, Is.Empty);
-      Assert.That(emptyCell.CannotBe, Is.Empty);
     }
 
     [Test]
@@ -38,7 +37,6 @@ namespace SimpleSudokuSolver.Test
       Assert.That(cell.Value, Is.EqualTo(9));
       Assert.That(cell.HasValue, Is.True);
       Assert.That(cell.CanBe, Is.Empty);
-      Assert.That(cell.CannotBe, Is.Empty);
     }
 
     [Test]
