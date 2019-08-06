@@ -23,6 +23,20 @@ namespace SimpleSudokuSolver.UI.ViewModel
 
     public Tuple<int,int> LastUpdatedCellIndex { get; private set; }
 
+    private bool _showCandidates;
+    public bool ShowCandidates
+    {
+      get
+      {
+        return _showCandidates;
+      }
+      set
+      {
+        _showCandidates = value;
+        OnPropertyChanged(nameof(ShowCandidates));
+      }
+    }
+
     private SudokuPuzzle _solvedSudokuPuzzle;
     public SudokuPuzzle SolvedSudokuPuzzle
     {
@@ -99,6 +113,7 @@ namespace SimpleSudokuSolver.UI.ViewModel
       ExitGameCommand = new RelayCommand(ExecuteExitGameCommand);
 
       StatusMessage = "Start new game or load and existing one";
+      ShowCandidates = true;
     }
 
     private void ExecuteNewGameCommand()

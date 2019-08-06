@@ -27,6 +27,8 @@
                 <MenuItem Header="_Back one step" Command="{Binding UndoGameStepCommand}" InputGestureText="F9" />
                 <MenuItem Header="Solve s_tep" Command="{Binding SolveGameStepCommand}" InputGestureText="F10" />
                 <Separator />
+                <MenuItem Header="Show _candidates" IsCheckable="True" IsChecked="{Binding ShowCandidates, Mode=TwoWay}" />
+                <Separator />
                 <MenuItem Header="_Exit" Command="{Binding ExitGameCommand}" InputGestureText="Alt+F4" />
             </MenuItem>
         </Menu>
@@ -37,7 +39,9 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <ui:SudokuBoard SudokuPuzzle="{Binding SudokuPuzzle}" SolvedSudokuPuzzle="{Binding SolvedSudokuPuzzle}" />
+            <ui:SudokuBoard SudokuPuzzle="{Binding SudokuPuzzle}"
+                            SolvedSudokuPuzzle="{Binding SolvedSudokuPuzzle}"
+                            ShowCandidates="{Binding ShowCandidates}" />
 
             <Grid Grid.Row="1" Height="75">
                 <TextBox x:Name="textBox" HorizontalAlignment="Stretch" VerticalContentAlignment="Top" Margin="5" IsReadOnly="True"

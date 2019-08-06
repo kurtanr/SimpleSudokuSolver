@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace SimpleSudokuSolver.UI
@@ -33,6 +34,15 @@ namespace SimpleSudokuSolver.UI
       set { SetValue(SolvedSudokuPuzzleProperty, value); }
     }
 
+    public static readonly DependencyProperty ShowCandidatesProperty =
+      DependencyProperty.Register("ShowCandidates", typeof(bool), typeof(SudokuBoard));
+
+    public bool ShowCandidates
+    {
+      get { return (bool)GetValue(ShowCandidatesProperty); }
+      set { SetValue(ShowCandidatesProperty, value); }
+    }
+
     #endregion
 
     public SudokuBoard()
@@ -52,8 +62,11 @@ namespace SimpleSudokuSolver.UI
       if (DesignerProperties.GetIsInDesignMode(this))
         return;
 
-      var descriptor = DependencyPropertyDescriptor.FromProperty(SudokuPuzzleProperty, typeof(SudokuBoard));
-      descriptor.AddValueChanged(this, new System.EventHandler((s, args) => { BindPuzzle(); }));
+      var descriptor1 = DependencyPropertyDescriptor.FromProperty(SudokuPuzzleProperty, typeof(SudokuBoard));
+      descriptor1.AddValueChanged(this, new System.EventHandler((s, args) => { BindPuzzle(); }));
+
+      var descriptor2 = DependencyPropertyDescriptor.FromProperty(ShowCandidatesProperty, typeof(SudokuBoard));
+      descriptor2.AddValueChanged(this, new System.EventHandler((s, args) => { ToggleShowCandidates(); }));
 
       var window = Window.GetWindow(this);
       window.KeyDown += OnKeyDown;
@@ -104,6 +117,15 @@ namespace SimpleSudokuSolver.UI
       if (frameworkElement.DataContext is CellViewModel cellViewModel)
       {
         SetActiveCell(cellViewModel.Cell);
+
+        // Fixes issue with arrow keys no longer working once user clicks inside the text box
+        var window = Window.GetWindow(frameworkElement);
+        var textBox = Keyboard.FocusedElement as TextBox;
+        if (window != null && textBox != null)
+        {
+          DependencyObject scope = FocusManager.GetFocusScope(textBox);
+          FocusManager.SetFocusedElement(scope, window);
+        }
       }
     }
 
@@ -128,7 +150,7 @@ namespace SimpleSudokuSolver.UI
       SetCellViewModelsForBlock(block9, SudokuPuzzle.Blocks[2, 2]);
 
       var lastUpdatedCellIndex = ((MainViewModel)DataContext).LastUpdatedCellIndex;
-      if(lastUpdatedCellIndex != null)
+      if (lastUpdatedCellIndex != null)
       {
         if (_activeCell != null)
           _activeCell.IsActive = false;
@@ -138,9 +160,34 @@ namespace SimpleSudokuSolver.UI
       }
     }
 
+    private void ToggleShowCandidates()
+    {
+      ToggleCellViewModelTooltip(block1);
+      ToggleCellViewModelTooltip(block2);
+      ToggleCellViewModelTooltip(block3);
+      ToggleCellViewModelTooltip(block4);
+      ToggleCellViewModelTooltip(block5);
+      ToggleCellViewModelTooltip(block6);
+      ToggleCellViewModelTooltip(block7);
+      ToggleCellViewModelTooltip(block8);
+      ToggleCellViewModelTooltip(block9);
+    }
+
+    private void ToggleCellViewModelTooltip(SudokuBlock sudokuBlock)
+    {
+      var cellViewModels = sudokuBlock.DataContext as CellViewModel[];
+      if (cellViewModels == null)
+        return;
+
+      foreach(var cellViewModel in cellViewModels)
+      {
+        cellViewModel.ShowTooltip = ShowCandidates;
+      }
+    }
+
     private void SetCellViewModelsForBlock(SudokuBlock sudokuBlock, Block block)
     {
-      var cellsViewModels = block.Cells.OfType<Cell>().Select(x => new CellViewModel(x)).ToArray();
+      var cellsViewModels = block.Cells.OfType<Cell>().Select(x => new CellViewModel(x, ShowCandidates)).ToArray();
       _cellViewModels.AddRange(cellsViewModels);
       sudokuBlock.DataContext = cellsViewModels;
     }
@@ -219,7 +266,7 @@ namespace SimpleSudokuSolver.UI
         _activeCell = null;
       }
 
-      if(cell != null)
+      if (cell != null)
       {
         _activeCell = _cellViewModels.Single(x => x.Cell == cell);
         _activeCell.IsActive = true;

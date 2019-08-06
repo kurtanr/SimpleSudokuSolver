@@ -28,7 +28,18 @@ namespace SimpleSudokuSolver.UI.ViewModel
       }
     }
 
-    public string Tooltip => Cell.CanBe.Count > 0 ? string.Join(",", Cell.CanBe) : null;
+    public string Tooltip => ShowTooltip && Cell.CanBe.Count > 0 ? string.Join(",", Cell.CanBe) : null;
+
+    private bool _showTooltip;
+    public bool ShowTooltip
+    {
+      get => _showTooltip;
+      set
+      {
+        _showTooltip = value;
+        OnPropertyChanged(nameof(Tooltip));
+      }
+    }
 
     public Cell Cell { get; }
 
@@ -37,9 +48,10 @@ namespace SimpleSudokuSolver.UI.ViewModel
       get { return Cell.Value != 0 ? Cell.Value.ToString() : string.Empty; }
     }
 
-    public CellViewModel(Cell cell)
+    public CellViewModel(Cell cell, bool showTooltip = false)
     {
       Cell = cell;
+      ShowTooltip = showTooltip;
     }
 
     public event PropertyChangedEventHandler PropertyChanged;
