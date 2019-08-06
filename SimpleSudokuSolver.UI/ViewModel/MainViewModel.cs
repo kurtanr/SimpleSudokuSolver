@@ -94,7 +94,7 @@ namespace SimpleSudokuSolver.UI.ViewModel
       SaveGameCommand = new RelayCommand(ExecuteSaveGameCommand, () => SudokuPuzzle != null);
       SolveGameCommand = new RelayCommand(ExecuteSolveGameCommand, () => SudokuPuzzle != null);
       UndoGameStepCommand = new RelayCommand(ExecuteUndoGameStepCommand,
-        () => SudokuPuzzle != null && SudokuPuzzle.Steps.Length > 0);
+        () => SudokuPuzzle != null && SudokuPuzzle.NumberOfSteps > 0);
       SolveGameStepCommand = new RelayCommand(ExecuteSolveGameStepCommand, () => SudokuPuzzle != null);
       ExitGameCommand = new RelayCommand(ExecuteExitGameCommand);
 
@@ -135,18 +135,18 @@ namespace SimpleSudokuSolver.UI.ViewModel
 
     private void ExecuteSolveGameCommand()
     {
-      if (_solver.IsSolved(SudokuPuzzle.ToIntArray()))
+      if (SudokuPuzzle.IsSolved())
         return;
 
-      var puzzle = _solver.Solve(SudokuPuzzle.ToIntArray(), out SingleStepSolution[] steps);
+      var puzzle = _solver.Solve(SudokuPuzzle.ToIntArray());
       SudokuPuzzle = puzzle;
 
-      foreach (var step in steps)
+      foreach (var step in SudokuPuzzle.Steps)
       {
         AppendMessage(step.SolutionDescription);
       }
 
-      if (!_solver.IsSolved(SudokuPuzzle.ToIntArray()))
+      if (!SudokuPuzzle.IsSolved())
         AppendMessage("Cannot solve puzzle");
 
       LastUpdatedCellIndex = null;
@@ -172,9 +172,7 @@ namespace SimpleSudokuSolver.UI.ViewModel
 
     private void ExecuteSolveGameStepCommand()
     {
-      var sudoku = SudokuPuzzle.ToIntArray();
-
-      if (_solver.IsSolved(sudoku))
+      if (SudokuPuzzle.IsSolved())
         return;
 
       var singleStepSolution = _solver.SolveSingleStep(SudokuPuzzle);
@@ -219,7 +217,7 @@ namespace SimpleSudokuSolver.UI.ViewModel
 
     public void UpdateStatusMessage()
     {
-      var isSolved = _solver.IsSolved(SudokuPuzzle.ToIntArray());
+      var isSolved = SudokuPuzzle.IsSolved();
       if (isSolved)
       {
         StatusMessage = "Sudoku is solved";

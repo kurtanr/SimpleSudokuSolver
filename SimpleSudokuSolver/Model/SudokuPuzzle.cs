@@ -12,6 +12,7 @@ namespace SimpleSudokuSolver.Model
     public Block[,] Blocks { get; }
     public int[] PossibleCellValues { get; }
     public SingleStepSolution[] Steps => _steps.Select(x => x.Item1).ToArray();
+    public int NumberOfSteps => _steps.Count;
 
     public int NumberOfRowsOrColumnsInPuzzle { get; }
     public int NumberOfRowsOrColumnsInBlock { get; }
@@ -191,6 +192,14 @@ namespace SimpleSudokuSolver.Model
       }
 
       return (-1, -1);
+    }
+
+    /// <summary>
+    /// Returns whether the puzzle is solved or not.
+    /// </summary>
+    public bool IsSolved()
+    {
+      return Validation.IsPuzzleSolved(this);
     }
 
     public override string ToString() => Formatter.PuzzleToString(this);

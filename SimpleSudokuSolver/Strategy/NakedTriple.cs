@@ -3,30 +3,47 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SimpleSudokuSolver
+namespace SimpleSudokuSolver.Strategy
 {
-  public partial class DefaultSolver
+  /// <summary>
+  /// Strategy looks for three cells in the same row / column / block that contain IN TOTAL three candidates.
+  /// Each of the three cells can contain two or three candidates.
+  /// If such three cells are found, then the three candidate values cannot be in any other cell in the same row / column / block.
+  /// </summary>
+  /// <remarks>
+  /// See also:
+  /// - https://sudoku9x9.com/naked_pair.html
+  /// - http://www.sudokuwiki.org/Naked_Candidates
+  /// </remarks>
+  public class NakedTriple : ISudokuSolverStrategy
   {
-    private SingleStepSolution NakedTriple(SudokuPuzzle sudokuPuzzle)
+    public string StrategyName => "Naked Triple";
+
+    public SingleStepSolution SolveSingleStep(SudokuPuzzle sudokuPuzzle)
     {
       var eliminations = new List<SingleStepSolution.Candidate>();
 
       foreach (var row in sudokuPuzzle.Rows)
       {
-        eliminations.AddRange(GetEliminationsTriple(row.Cells, sudokuPuzzle));
+        eliminations.AddRange(GetNakedTripleEliminations(row.Cells, sudokuPuzzle));
       }
 
       foreach (var column in sudokuPuzzle.Columns)
       {
-        eliminations.AddRange(GetEliminationsTriple(column.Cells, sudokuPuzzle));
+        eliminations.AddRange(GetNakedTripleEliminations(column.Cells, sudokuPuzzle));
+      }
+
+      foreach (var block in sudokuPuzzle.Blocks)
+      {
+        eliminations.AddRange(GetNakedTripleEliminations(block.Cells.OfType<Cell>(), sudokuPuzzle));
       }
 
       return eliminations.Count > 0 ?
-        new SingleStepSolution(eliminations.ToArray(), "Naked Triple") :
+        new SingleStepSolution(eliminations.ToArray(), StrategyName) :
         null;
     }
 
-    private IEnumerable<SingleStepSolution.Candidate> GetEliminationsTriple(Cell[] cells, SudokuPuzzle sudokuPuzzle)
+    private IEnumerable<SingleStepSolution.Candidate> GetNakedTripleEliminations(IEnumerable<Cell> cells, SudokuPuzzle sudokuPuzzle)
     {
       var cellsWithNoValue = cells.Where(x => !x.HasValue).ToArray();
       var eliminations = new List<SingleStepSolution.Candidate>();
@@ -35,8 +52,6 @@ namespace SimpleSudokuSolver
       var nakedTripleCandidates = cellsWithNoValue.Where(x => x.CanBe.Count == 2 || x.CanBe.Count == 3).ToArray();
       if (nakedTripleCandidates.Length < 3)
         return eliminations;
-
-      List<Tuple<Cell, Cell, Cell>> nakedTriples = new List<Tuple<Cell, Cell, Cell>>();
 
       for (int i = 0; i < nakedTripleCandidates.Length - 2; i++)
       {
@@ -59,35 +74,11 @@ namespace SimpleSudokuSolver
 
             if (distinctPotentialCellValuesInCandidates.Length == 3)
             {
-              nakedTriples.Add(new Tuple<Cell, Cell, Cell>(first, second, third));
+              var nakedTriple = new Tuple<Cell, Cell, Cell>(first, second, third);
+
+              eliminations.AddRange(GetNakedTripleEliminationsCore(
+                nakedTriple, distinctPotentialCellValuesInCandidates, cellsWithNoValue, sudokuPuzzle));
             }
-          }
-        }
-      }
-
-      if (nakedTriples.Count() > 0)
-      {
-        foreach (var nakedTriple in nakedTriples)
-        {
-          var distinctPotentialCellValuesInCandidates = GetDistinctPotentialCellValuesInCandidates(
-            nakedTriple.Item1.CanBe, nakedTriple.Item2.CanBe, nakedTriple.Item3.CanBe);
-
-          eliminations.AddRange(GetEliminationsTripleCore(
-            nakedTriple, distinctPotentialCellValuesInCandidates, cellsWithNoValue, sudokuPuzzle));
-
-          // if all three members of a naked triple belong to the same block, their values can be removed 
-          // as potential values from all the other cells in the block
-          var item1BlockIndex = sudokuPuzzle.GetBlockIndex(nakedTriple.Item1);
-          var item2BlockIndex = sudokuPuzzle.GetBlockIndex(nakedTriple.Item2);
-          var item3BlockIndex = sudokuPuzzle.GetBlockIndex(nakedTriple.Item3);
-
-          if (item1BlockIndex.Equals(item2BlockIndex) && item1BlockIndex.Equals(item3BlockIndex) && item2BlockIndex.Equals(item3BlockIndex))
-          {
-            var block = sudokuPuzzle.Blocks[item1BlockIndex.RowIndex, item1BlockIndex.ColumnIndex];
-            var cellWithNoValueInBlock = block.Cells.OfType<Cell>().Where(x => !x.HasValue).ToArray();
-
-            eliminations.AddRange(GetEliminationsTripleCore(
-              nakedTriple, distinctPotentialCellValuesInCandidates, cellWithNoValueInBlock, sudokuPuzzle));
           }
         }
       }
@@ -95,7 +86,7 @@ namespace SimpleSudokuSolver
       return eliminations;
     }
 
-    private IEnumerable<SingleStepSolution.Candidate> GetEliminationsTripleCore(
+    private IEnumerable<SingleStepSolution.Candidate> GetNakedTripleEliminationsCore(
       Tuple<Cell, Cell, Cell> nakedTriple, int[] distinctPotentialCellValuesInCandidates, Cell[] cellsWithNoValue, SudokuPuzzle sudokuPuzzle)
     {
       var eliminations = new List<SingleStepSolution.Candidate>();
@@ -113,7 +104,6 @@ namespace SimpleSudokuSolver
           {
             if (cellWithNoValue.CanBe.Contains(finalItem))
             {
-              cellWithNoValue.CanBe.Remove(finalItem);
               var (RowIndex, ColumnIndex) = sudokuPuzzle.GetCellIndex(cellWithNoValue);
               eliminations.Add(new SingleStepSolution.Candidate(RowIndex, ColumnIndex, finalItem));
             }
@@ -123,6 +113,9 @@ namespace SimpleSudokuSolver
       return eliminations;
     }
 
+    /// <summary>
+    /// Flattens the array of enumerables into a single array and returns unique items of that array (no repetition).
+    /// </summary>
     private int[] GetDistinctPotentialCellValuesInCandidates(params IEnumerable<int>[] items)
     {
       List<int> result = new List<int>();

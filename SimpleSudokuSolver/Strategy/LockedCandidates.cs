@@ -3,11 +3,21 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SimpleSudokuSolver
+namespace SimpleSudokuSolver.Strategy
 {
-  public partial class DefaultSolver
+  /// <summary>
+  /// Strategy is examining blocks, and is looking for values which can appear only in a single block row or block column.
+  /// If such a values is found, the entire row or column outside the current block cannot contain that value.
+  /// </summary>
+  /// <remarks>
+  /// See also:
+  /// - https://sudoku9x9.com/locked_candidates.html
+  /// </remarks>
+  public class LockedCandidates : ISudokuSolverStrategy
   {
-    private SingleStepSolution LockedCandidates(SudokuPuzzle sudokuPuzzle)
+    public string StrategyName => "Locked Candidates";
+
+    public SingleStepSolution SolveSingleStep(SudokuPuzzle sudokuPuzzle)
     {
       var eliminations = new List<SingleStepSolution.Candidate>();
 
@@ -36,7 +46,6 @@ namespace SimpleSudokuSolver
 
             if (cell.CanBe.Contains(cellValue))
             {
-              cell.CanBe.Remove(cellValue);
               var (RowIndex, ColumnIndex) = sudokuPuzzle.GetCellIndex(cell);
               eliminations.Add(new SingleStepSolution.Candidate(RowIndex, ColumnIndex, cellValue));
             }
@@ -54,7 +63,6 @@ namespace SimpleSudokuSolver
 
             if (cell.CanBe.Contains(cellValue))
             {
-              cell.CanBe.Remove(cellValue);
               var (RowIndex, ColumnIndex) = sudokuPuzzle.GetCellIndex(cell);
               eliminations.Add(new SingleStepSolution.Candidate(RowIndex, ColumnIndex, cellValue));
             }
@@ -63,7 +71,7 @@ namespace SimpleSudokuSolver
       }
 
       return eliminations.Count > 0 ?
-        new SingleStepSolution(eliminations.ToArray(), "Locked Candidates") :
+        new SingleStepSolution(eliminations.ToArray(), StrategyName) :
         null;
     }
 

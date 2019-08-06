@@ -2,35 +2,46 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SimpleSudokuSolver
+namespace SimpleSudokuSolver.Strategy
 {
-  public partial class DefaultSolver
+  /// <summary>
+  /// Strategy looks for two cells in the same row / column / block that have exactly the same two candidate values.
+  /// If such two cells are found, then the two candidate values cannot be in any other cell in the same row / column / block.
+  /// </summary>
+  /// <remarks>
+  /// See also:
+  /// - https://sudoku9x9.com/naked_pair.html
+  /// - http://www.sudokuwiki.org/Naked_Candidates
+  /// </remarks>
+  public class NakedPair : ISudokuSolverStrategy
   {
-    private SingleStepSolution NakedPair(SudokuPuzzle sudokuPuzzle)
+    public string StrategyName => "Naked Pair";
+
+    public SingleStepSolution SolveSingleStep(SudokuPuzzle sudokuPuzzle)
     {
       var eliminations = new List<SingleStepSolution.Candidate>();
 
       foreach (var row in sudokuPuzzle.Rows)
       {
-        eliminations.AddRange(GetEliminationsPair(row.Cells, sudokuPuzzle));
+        eliminations.AddRange(GetNakedPairEliminations(row.Cells, sudokuPuzzle));
       }
 
       foreach (var column in sudokuPuzzle.Columns)
       {
-        eliminations.AddRange(GetEliminationsPair(column.Cells, sudokuPuzzle));
+        eliminations.AddRange(GetNakedPairEliminations(column.Cells, sudokuPuzzle));
       }
 
       foreach (var block in sudokuPuzzle.Blocks)
       {
-        eliminations.AddRange(GetEliminationsPair(block.Cells.OfType<Cell>().ToArray(), sudokuPuzzle));
+        eliminations.AddRange(GetNakedPairEliminations(block.Cells.OfType<Cell>(), sudokuPuzzle));
       }
 
       return eliminations.Count > 0 ?
-        new SingleStepSolution(eliminations.ToArray(), "Naked Pair") :
+        new SingleStepSolution(eliminations.ToArray(), StrategyName) :
         null;
     }
 
-    private IEnumerable<SingleStepSolution.Candidate> GetEliminationsPair(Cell[] cells, SudokuPuzzle sudokuPuzzle)
+    private IEnumerable<SingleStepSolution.Candidate> GetNakedPairEliminations(IEnumerable<Cell> cells, SudokuPuzzle sudokuPuzzle)
     {
       var cellsWithNoValue = cells.Where(x => !x.HasValue).ToArray();
       var nakedPairCandidates = cellsWithNoValue.Where(x => x.CanBe.Count == 2).ToArray();
@@ -54,7 +65,6 @@ namespace SimpleSudokuSolver
               {
                 if (cell.CanBe.Contains(candidate))
                 {
-                  cell.CanBe.Remove(candidate);
                   var (RowIndex, ColumnIndex) = sudokuPuzzle.GetCellIndex(cell);
                   eliminations.Add(new SingleStepSolution.Candidate(RowIndex, ColumnIndex, candidate));
                 }

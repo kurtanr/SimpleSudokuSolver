@@ -2,11 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SimpleSudokuSolver
+namespace SimpleSudokuSolver.Strategy
 {
-  public partial class DefaultSolver
+  /// <summary>
+  /// For each row, column and block of the puzzle, strategy eliminates candidate values from empty cells.
+  /// Candidate values that are eliminated are the already known values in the row, column and block of the empty cell.
+  /// </summary>
+  public class BasicElimination : ISudokuSolverStrategy
   {
-    private SingleStepSolution CandidateElimination(SudokuPuzzle sudokuPuzzle)
+    public string StrategyName => "Basic Elimination";
+
+    public SingleStepSolution SolveSingleStep(SudokuPuzzle sudokuPuzzle)
     {
       var eliminations = new List<SingleStepSolution.Candidate>();
 
@@ -29,7 +35,7 @@ namespace SimpleSudokuSolver
       }
 
       return eliminations.Count > 0 ?
-        new SingleStepSolution(eliminations.ToArray(), "Basic Elimination") :
+        new SingleStepSolution(eliminations.ToArray(), StrategyName) :
         null;
     }
 
@@ -46,7 +52,6 @@ namespace SimpleSudokuSolver
         {
           if (cellWithNoValue.CanBe.Contains(cellWithValue.Value))
           {
-            cellWithNoValue.CanBe.Remove(cellWithValue.Value);
             var (RowIndex, ColumnIndex) = sudokuPuzzle.GetCellIndex(cellWithNoValue);
             eliminations.Add(new SingleStepSolution.Candidate(RowIndex, ColumnIndex, cellWithValue.Value));
           }
