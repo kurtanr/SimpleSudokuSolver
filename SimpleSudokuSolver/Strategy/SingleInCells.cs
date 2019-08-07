@@ -48,7 +48,7 @@ namespace SimpleSudokuSolver.Strategy
         var value = sudokuPuzzle.PossibleCellValues.Except(knownValues).Single();
 
         var (RowIndex, ColumnIndex) = sudokuPuzzle.GetCellIndex(cellsWithNoValue[0]);
-        return new SingleStepSolution(RowIndex, ColumnIndex, value, "Single in Row");
+        return new SingleStepSolution(RowIndex, ColumnIndex, value, strategyName);
       }
 
       return null;
