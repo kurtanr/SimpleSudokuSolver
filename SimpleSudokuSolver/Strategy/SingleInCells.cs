@@ -9,27 +9,30 @@ namespace SimpleSudokuSolver.Strategy
   /// </summary>
   public class SingleInCells : ISudokuSolverStrategy
   {
-    public string StrategyName => "Single in Cells";
+    public string StrategyName { get; private set; }
 
     public SingleStepSolution SolveSingleStep(SudokuPuzzle sudokuPuzzle)
     {
       foreach (var row in sudokuPuzzle.Rows)
       {
-        var rowSolution = GetSingleInCells(sudokuPuzzle, row.Cells, "Single in Row");
+        StrategyName = "Single in Row";
+        var rowSolution = GetSingleInCells(sudokuPuzzle, row.Cells);
         if (rowSolution != null)
           return rowSolution;
       }
 
       foreach (var column in sudokuPuzzle.Columns)
       {
-        var columnSolution = GetSingleInCells(sudokuPuzzle, column.Cells, "Single in Column");
+        StrategyName = "Single in Column";
+        var columnSolution = GetSingleInCells(sudokuPuzzle, column.Cells);
         if (columnSolution != null)
           return columnSolution;
       }
 
       foreach (var block in sudokuPuzzle.Blocks)
       {
-        var blockSolution = GetSingleInCells(sudokuPuzzle, block.Cells.OfType<Cell>(), "Single in Block");
+        StrategyName = "Single in Block";
+        var blockSolution = GetSingleInCells(sudokuPuzzle, block.Cells.OfType<Cell>());
         if (blockSolution != null)
           return blockSolution;
       }
@@ -37,7 +40,7 @@ namespace SimpleSudokuSolver.Strategy
       return null;
     }
 
-    private SingleStepSolution GetSingleInCells(SudokuPuzzle sudokuPuzzle, IEnumerable<Cell> cells, string strategyName)
+    private SingleStepSolution GetSingleInCells(SudokuPuzzle sudokuPuzzle, IEnumerable<Cell> cells)
     {
       var cellsWithNoValue = cells.Where(x => !x.HasValue).ToArray();
 
@@ -48,7 +51,7 @@ namespace SimpleSudokuSolver.Strategy
         var value = sudokuPuzzle.PossibleCellValues.Except(knownValues).Single();
 
         var (RowIndex, ColumnIndex) = sudokuPuzzle.GetCellIndex(cellsWithNoValue[0]);
-        return new SingleStepSolution(RowIndex, ColumnIndex, value, strategyName);
+        return new SingleStepSolution(RowIndex, ColumnIndex, value, StrategyName);
       }
 
       return null;

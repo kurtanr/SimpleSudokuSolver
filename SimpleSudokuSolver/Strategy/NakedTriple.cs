@@ -60,14 +60,10 @@ namespace SimpleSudokuSolver.Strategy
         for (int j = i + 1; j < nakedTripleCandidates.Length - 1; j++)
         {
           Cell second = nakedTripleCandidates[j];
-          if (first == second)
-            continue;
 
           for (int k = j + 1; k < nakedTripleCandidates.Length; k++)
           {
             Cell third = nakedTripleCandidates[k];
-            if (first == third || second == third)
-              continue;
 
             var distinctPotentialCellValuesInCandidates = GetDistinctPotentialCellValuesInCandidates(
               first.CanBe, second.CanBe, third.CanBe);
@@ -102,11 +98,8 @@ namespace SimpleSudokuSolver.Strategy
         {
           foreach (var finalItem in finalItems)
           {
-            if (cellWithNoValue.CanBe.Contains(finalItem))
-            {
-              var (RowIndex, ColumnIndex) = sudokuPuzzle.GetCellIndex(cellWithNoValue);
-              eliminations.Add(new SingleStepSolution.Candidate(RowIndex, ColumnIndex, finalItem));
-            }
+            var (RowIndex, ColumnIndex) = sudokuPuzzle.GetCellIndex(cellWithNoValue);
+            eliminations.Add(new SingleStepSolution.Candidate(RowIndex, ColumnIndex, finalItem));
           }
         }
       }

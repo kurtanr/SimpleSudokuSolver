@@ -1,6 +1,5 @@
 ﻿using SimpleSudokuSolver.Model;
 using SimpleSudokuSolver.Strategy;
-using System.Collections.Generic;
 
 namespace SimpleSudokuSolver
 {
@@ -10,7 +9,36 @@ namespace SimpleSudokuSolver
   public partial class DefaultSolver : ISudokuSolver
   {
     private SudokuPuzzle _sudokuPuzzleAfterFailedSolveSingleStep;
-    private BasicElimination _basicElimination = new BasicElimination();
+    private readonly BasicElimination _basicElimination = new BasicElimination();
+    private readonly ISudokuSolverStrategy[] _strategies;
+
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="strategies">
+    /// Strategies used to try and solve the puzzle.
+    /// If no strategies are provided, a default set of strategies is used.
+    /// </param>
+    public DefaultSolver(params ISudokuSolverStrategy[] strategies)
+    {
+      if (strategies.Length > 0)
+      {
+        _strategies = strategies;
+      }
+      else
+      {
+        _strategies = new ISudokuSolverStrategy[]
+        {
+          // Ordered from the simplest to the most complex
+          new SingleInCells(),
+          new HiddenSingle(),
+          new NakedSingle(),
+          new LockedCandidates(),
+          new NakedPair(),
+          new NakedTriple()
+        };
+      }
+    }
 
     /// <inheritdoc />
     public SudokuPuzzle Solve(int[,] sudoku)
@@ -29,6 +57,7 @@ namespace SimpleSudokuSolver
         else
         {
           sudokuPuzzle.ApplySingleStepSolution(solution);
+          _sudokuPuzzleAfterFailedSolveSingleStep = sudokuPuzzle;
         }
       }
 
@@ -41,29 +70,17 @@ namespace SimpleSudokuSolver
       if (sudokuPuzzle.IsSolved())
         return null;
 
-      var solvingTechniques = new ISudokuSolverStrategy[]
-      {
-        // Ordered from the simples to the most complex
-        new SingleInCells(),
-        new HiddenSingle(),
-        new NakedSingle(),
-        new LockedCandidates(),
-        new NakedPair(),
-        new NakedTriple()
-      };
-
-      foreach (var technique in solvingTechniques)
+      foreach (var strategy in _strategies)
       {
         var elimination = _basicElimination.SolveSingleStep(sudokuPuzzle);
         if (elimination != null)
           return elimination;
 
-        var solution = technique.SolveSingleStep(sudokuPuzzle);
+        var solution = strategy.SolveSingleStep(sudokuPuzzle);
         if (solution != null)
           return solution;
       }
 
-      _sudokuPuzzleAfterFailedSolveSingleStep = sudokuPuzzle;
       return null;
     }
   }

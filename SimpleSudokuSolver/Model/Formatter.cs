@@ -82,12 +82,7 @@ namespace SimpleSudokuSolver.Model
         for (int j = 0; j < columnCount; j++)
         {
           var prefix = (j == 0 ? "" : " ");
-
-          if (sudokuPuzzle.Cells[i, j] != null)
-          {
-            sb.Append($"{prefix}{sudokuPuzzle.Cells[i, j].Value}");
-          }
-          else sb.Append($"{prefix} ");
+          sb.Append($"{prefix}{sudokuPuzzle.Cells[i, j].Value}");
 
         }
         sb.Append(Environment.NewLine);

@@ -53,8 +53,8 @@ namespace SimpleSudokuSolver.Tests.Strategy
         { 0,0,0,0,0,0,0,0,0 }
       };
 
-      var solver = new DefaultSolver();
-      var sudokuPuzzle = solver.Solve(sudoku);
+      var sudokuPuzzle = new SudokuPuzzle(sudoku);
+      SolveUsingStrategy(sudokuPuzzle, _strategy);
 
       CollectionAssert.DoesNotContain(sudokuPuzzle.Cells[0, 3].CanBe, 3);
       CollectionAssert.DoesNotContain(sudokuPuzzle.Cells[0, 4].CanBe, 3);
