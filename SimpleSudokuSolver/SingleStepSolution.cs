@@ -37,6 +37,23 @@ namespace SimpleSudokuSolver
       /// </summary>
       public int Value { get; }
 
+      public override bool Equals(object obj)
+      {
+        return obj is Candidate candidate &&
+               IndexOfRow == candidate.IndexOfRow &&
+               IndexOfColumn == candidate.IndexOfColumn &&
+               Value == candidate.Value;
+      }
+
+      public override int GetHashCode()
+      {
+        var hashCode = -613434448;
+        hashCode = hashCode * -1521134295 + IndexOfRow.GetHashCode();
+        hashCode = hashCode * -1521134295 + IndexOfColumn.GetHashCode();
+        hashCode = hashCode * -1521134295 + Value.GetHashCode();
+        return hashCode;
+      }
+
       public override string ToString()
       {
         return $"[{IndexOfRow},{IndexOfColumn}] - {Value}";

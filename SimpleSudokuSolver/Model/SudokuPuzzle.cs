@@ -76,6 +76,9 @@ namespace SimpleSudokuSolver.Model
     /// <param name="singleStepSolution">Solution which is applied to the puzzle.</param>
     public void ApplySingleStepSolution(SingleStepSolution singleStepSolution)
     {
+      if (singleStepSolution == null)
+        return;
+
       if (singleStepSolution.Result == null &&
         (singleStepSolution.Eliminations == null || singleStepSolution.Eliminations.Length == 0))
         return;
@@ -111,10 +114,6 @@ namespace SimpleSudokuSolver.Model
       var step = _steps.Last();
       var singleStepSolution = step.Item1;
 
-      if (singleStepSolution.Result == null &&
-        (singleStepSolution.Eliminations == null || singleStepSolution.Eliminations.Length == 0))
-        return null;
-
       if (singleStepSolution.Result != null)
       {
         var cell = Cells[singleStepSolution.Result.IndexOfRow, singleStepSolution.Result.IndexOfColumn];
@@ -129,7 +128,7 @@ namespace SimpleSudokuSolver.Model
         }
 
         // cell.CanBe is now no longer sorted
-        foreach(var cell in Cells.OfType<Cell>())
+        foreach (var cell in Cells.OfType<Cell>())
         {
           cell.CanBe.Sort();
         }
@@ -160,10 +159,13 @@ namespace SimpleSudokuSolver.Model
 
     /// <summary>
     /// Returns zero-based row and column index of the <paramref name="cell"/>.
-    /// Returns -1 for both row and column index if <paramref name="cell"/> is not part of the puzzle.
+    /// Returns -1 for both row and column index if <paramref name="cell"/> is null or not part of the puzzle.
     /// </summary>
     public (int RowIndex, int ColumnIndex) GetCellIndex(Cell cell)
     {
+      if (cell == null)
+        return (-1, -1);
+
       for (int i = 0; i < NumberOfRowsOrColumnsInPuzzle; i++)
       {
         for (int j = 0; j < NumberOfRowsOrColumnsInPuzzle; j++)
@@ -178,10 +180,13 @@ namespace SimpleSudokuSolver.Model
 
     /// <summary>
     /// Returns zero-based row and column index of the block which contains the <paramref name="cell"/>.
-    /// Returns -1 for both row and column index if <paramref name="cell"/> is not part of the puzzle.
+    /// Returns -1 for both row and column index if <paramref name="cell"/> is null or not part of the puzzle.
     /// </summary>
     public (int RowIndex, int ColumnIndex) GetBlockIndex(Cell cell)
     {
+      if (cell == null)
+        return (-1, -1);
+
       for (int i = 0; i < NumberOfRowsOrColumnsInPuzzle; i++)
       {
         for (int j = 0; j < NumberOfRowsOrColumnsInPuzzle; j++)

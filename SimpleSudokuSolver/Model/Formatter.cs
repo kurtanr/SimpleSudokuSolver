@@ -23,7 +23,14 @@ namespace SimpleSudokuSolver.Model
       {
         for (int j = 0; j < columnCount; j++)
         {
-          sb.Append(block.Cells[i, j].Value + " ");
+          var prefix = (j == 0 ? "" : " ");
+
+          if (block.Cells[i, j] != null)
+          {
+            sb.Append($"{prefix}{block.Cells[i, j].Value}");
+          }
+          else sb.Append($"{prefix} ");
+
         }
         sb.Append(Environment.NewLine);
       }
@@ -38,21 +45,27 @@ namespace SimpleSudokuSolver.Model
 
       for (int i = 0; i < columnCount; i++)
       {
-        sb.Append(row.Cells[i].Value + " ");
+        var prefix = (i == 0 ? "" : " ");
+
+        if (row.Cells[i] != null)
+        {
+          sb.Append($"{prefix}{row.Cells[i].Value}");
+        }
+        else sb.Append($"{prefix} ");
       }
 
-      sb.Append(Environment.NewLine);
       return sb.ToString();
     }
 
     internal static string ColumnToString(Column column)
     {
       var sb = new StringBuilder();
-      var rowCount = column.Cells.Length;
+      var columnCount = column.Cells.Length;
 
-      for (int i = 0; i < rowCount; i++)
+      for (int i = 0; i < columnCount; i++)
       {
-        sb.Append(column.Cells[i].Value + Environment.NewLine);
+        var value = column.Cells[i] != null ? column.Cells[i].Value.ToString() : " ";
+        sb.Append($"{value}{Environment.NewLine}");
       }
 
       return sb.ToString();
@@ -68,7 +81,14 @@ namespace SimpleSudokuSolver.Model
       {
         for (int j = 0; j < columnCount; j++)
         {
-          sb.Append(sudokuPuzzle.Cells[i, j].Value + " ");
+          var prefix = (j == 0 ? "" : " ");
+
+          if (sudokuPuzzle.Cells[i, j] != null)
+          {
+            sb.Append($"{prefix}{sudokuPuzzle.Cells[i, j].Value}");
+          }
+          else sb.Append($"{prefix} ");
+
         }
         sb.Append(Environment.NewLine);
       }

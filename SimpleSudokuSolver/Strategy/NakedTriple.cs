@@ -39,7 +39,7 @@ namespace SimpleSudokuSolver.Strategy
       }
 
       return eliminations.Count > 0 ?
-        new SingleStepSolution(eliminations.ToArray(), StrategyName) :
+        new SingleStepSolution(eliminations.Distinct().ToArray(), StrategyName) :
         null;
     }
 
