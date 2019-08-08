@@ -1,13 +1,17 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace SimpleSudokuSolver.PuzzleProviders
 {
   /// <summary>
   /// Reads sudoku puzzle from file.
   /// Each row in the file represents one row of the puzzle.
-  /// Values must be separated using either comma, space or tab.
+  /// Values in the row are:
+  /// - separated using either comma, space or tab
+  /// - or not separated at all
+  /// Lines starting with '#' are ignored.
   /// </summary>
   public class SudokuFilePuzzleProvider : ISudokuPuzzleProvider
   {
@@ -24,7 +28,14 @@ namespace SimpleSudokuSolver.PuzzleProviders
     /// <inheritdoc />
     public int[,] GetPuzzle()
     {
-      var lines = File.ReadAllLines(_filePath).Where(x => !string.IsNullOrWhiteSpace(x.Trim())).ToArray();
+      var lines = File.ReadAllLines(_filePath).Where(x =>
+      {
+        var trimmed = x.Trim();
+        if (trimmed.StartsWith("#"))
+          return false;
+
+        return !string.IsNullOrWhiteSpace(trimmed);
+      }).ToArray();
       var firstRowElements = GetRowElements(lines[0]);
 
       int rowCount = lines.Length;
@@ -46,8 +57,15 @@ namespace SimpleSudokuSolver.PuzzleProviders
 
     private int[] GetRowElements(string row)
     {
-      var splitCharacters = new char[] { ',', ' ', '\t' };
-      return row.Split(splitCharacters)
+      var separators = new[] { ",", " ", "\t" };
+
+      // if there are no separators, add them
+      if (!separators.Any(x => row.Contains(x)))
+      {
+        row = Regex.Replace(row, ".{1}", "$0,");
+      }
+
+      return row.Split(separators, StringSplitOptions.RemoveEmptyEntries)
         .Where(x => !string.IsNullOrWhiteSpace(x.Trim()))
         .Select(x => int.Parse(x.Trim()))
         .ToArray();

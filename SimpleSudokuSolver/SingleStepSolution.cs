@@ -37,6 +37,33 @@ namespace SimpleSudokuSolver
       /// </summary>
       public int Value { get; }
 
+      /// <remarks>
+      /// For implementation details see:
+      /// https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/statements-expressions-operators/how-to-define-value-equality-for-a-type
+      /// </remarks>
+      public static bool operator ==(Candidate lhs, Candidate rhs)
+      {
+        // Check for null on left side.
+        if (object.ReferenceEquals(lhs, null))
+        {
+          if (object.ReferenceEquals(rhs, null))
+          {
+            // null == null = true.
+            return true;
+          }
+
+          // Only the left side is null.
+          return false;
+        }
+        // Equals handles case of null on right side.
+        return lhs.Equals(rhs);
+      }
+
+      public static bool operator !=(Candidate lhs, Candidate rhs)
+      {
+        return !(lhs == rhs);
+      }
+
       public override bool Equals(object obj)
       {
         return obj is Candidate candidate &&
