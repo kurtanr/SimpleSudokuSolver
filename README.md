@@ -1,6 +1,7 @@
 # SimpleSudokuSolver
 
 [![Build](https://img.shields.io/appveyor/ci/kurtanr/SimpleSudokuSolver.svg)](https://ci.appveyor.com/project/kurtanr/SimpleSudokuSolver)
+[![Codecov](https://img.shields.io/codecov/c/gh/kurtanr/SimpleSudokuSolver)](https://codecov.io/gh/kurtanr/SimpleSudokuSolver)
 [![Nuget](https://img.shields.io/nuget/v/SimpleSudokuSolver.svg?color=green)](https://www.nuget.org/packages/SimpleSudokuSolver/)
 [![License](https://img.shields.io/github/license/kurtanr/SimpleSudokuSolver.svg)](https://github.com/kurtanr/SimpleSudokuSolver/blob/master/LICENSE)
 
