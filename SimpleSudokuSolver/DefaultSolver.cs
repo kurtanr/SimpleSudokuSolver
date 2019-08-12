@@ -36,7 +36,10 @@ namespace SimpleSudokuSolver
           new LockedCandidates(),
           new NakedPair(),
           new NakedTriple(),
-          new NakedQuad()
+          new NakedQuad(),
+          new HiddenPair(),
+          new HiddenTriple(),
+          new HiddenQuad()
         };
       }
     }
