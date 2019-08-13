@@ -5,9 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:ui="clr-namespace:SimpleSudokuSolver.UI"
         mc:Ignorable="d"
-        Title="Sudoku" Height="610" Width="550"
+        Title="Sudoku" Height="634" Width="566"
         WindowStartupLocation="CenterScreen" ResizeMode="NoResize"
-        WindowStyle="ToolWindow">
+        WindowStyle="SingleBorderWindow">
     <Window.InputBindings>
         <KeyBinding Modifiers="Control" Key="N" Command="{Binding NewGameCommand}" />
         <KeyBinding Modifiers="Control" Key="L" Command="{Binding LoadGameCommand}" />
