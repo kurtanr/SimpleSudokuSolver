@@ -1,5 +1,6 @@
 # SimpleSudokuSolver
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/607feb9c1fd2454997e89ba592c345c4)](https://app.codacy.com/app/kurtanr/SimpleSudokuSolver?utm_source=github.com&utm_medium=referral&utm_content=kurtanr/SimpleSudokuSolver&utm_campaign=Badge_Grade_Settings)
 [![Build](https://img.shields.io/appveyor/ci/kurtanr/SimpleSudokuSolver.svg)](https://ci.appveyor.com/project/kurtanr/SimpleSudokuSolver)
 [![Codecov](https://img.shields.io/codecov/c/gh/kurtanr/SimpleSudokuSolver)](https://codecov.io/gh/kurtanr/SimpleSudokuSolver)
 [![Nuget](https://img.shields.io/nuget/v/SimpleSudokuSolver.svg?color=green)](https://www.nuget.org/packages/SimpleSudokuSolver/)
