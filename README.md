@@ -1,8 +1,8 @@
 # SimpleSudokuSolver
 
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/607feb9c1fd2454997e89ba592c345c4)](https://app.codacy.com/app/kurtanr/SimpleSudokuSolver?utm_source=github.com&utm_medium=referral&utm_content=kurtanr/SimpleSudokuSolver&utm_campaign=Badge_Grade_Settings)
 [![Build](https://img.shields.io/appveyor/ci/kurtanr/SimpleSudokuSolver.svg)](https://ci.appveyor.com/project/kurtanr/SimpleSudokuSolver)
 [![Codecov](https://img.shields.io/codecov/c/gh/kurtanr/SimpleSudokuSolver)](https://codecov.io/gh/kurtanr/SimpleSudokuSolver)
+[![Codacy grade](https://img.shields.io/codacy/grade/607feb9c1fd2454997e89ba592c345c4)](https://app.codacy.com/app/kurtanr/SimpleSudokuSolver)
 [![Nuget](https://img.shields.io/nuget/v/SimpleSudokuSolver.svg?color=green)](https://www.nuget.org/packages/SimpleSudokuSolver/)
 [![License](https://img.shields.io/github/license/kurtanr/SimpleSudokuSolver.svg)](https://github.com/kurtanr/SimpleSudokuSolver/blob/master/LICENSE)
 
@@ -17,12 +17,12 @@ Repository contains tests for the library and a UI which uses the library and ca
 </p>
 
 Out of the well known [Sudoku Solving Techniques](https://sudoku9x9.com/sudoku_solving_techniques_9x9.html), the solver currently implements:
-* Hidden Single
-* Naked Single
-* Locked Candidates
-* Naked Pair
-* Naked Triple
-* Naked Quad
-* Hidden Pair
-* Hidden Triple
-* Hidden Quad
+*   Hidden Single
+*   Naked Single
+*   Locked Candidates
+*   Naked Pair
+*   Naked Triple
+*   Naked Quad
+*   Hidden Pair
+*   Hidden Triple
+*   Hidden Quad

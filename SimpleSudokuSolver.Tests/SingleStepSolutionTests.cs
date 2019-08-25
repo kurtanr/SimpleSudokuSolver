@@ -16,6 +16,7 @@ namespace SimpleSudokuSolver.Tests
       Assert.That(null != candidate);
       Assert.That(candidate == otherCandidate);
       Assert.That(candidate.Equals(otherCandidate));
+      Assert.That(candidate.Equals((object)otherCandidate));
       Assert.That(candidate.GetHashCode() == otherCandidate.GetHashCode());
 
       var rowDiffers = new SingleStepSolution.Candidate(0, 2, 3);

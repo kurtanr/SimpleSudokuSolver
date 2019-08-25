@@ -58,14 +58,15 @@ namespace SimpleSudokuSolver.PuzzleProviders
     private int[] GetRowElements(string row)
     {
       var separators = new[] { ",", " ", "\t" };
+      var rowWithSeparators = row;
 
       // if there are no separators, add them
       if (!separators.Any(x => row.Contains(x)))
       {
-        row = Regex.Replace(row, ".{1}", "$0,");
+        rowWithSeparators = Regex.Replace(rowWithSeparators, ".{1}", "$0,");
       }
 
-      return row.Split(separators, StringSplitOptions.RemoveEmptyEntries)
+      return rowWithSeparators.Split(separators, StringSplitOptions.RemoveEmptyEntries)
         .Where(x => !string.IsNullOrWhiteSpace(x.Trim()))
         .Select(x => int.Parse(x.Trim()))
         .ToArray();

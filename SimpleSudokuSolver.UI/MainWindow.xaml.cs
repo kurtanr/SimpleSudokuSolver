@@ -45,7 +45,7 @@ namespace SimpleSudokuSolver.UI
 
     private void OnSaveGame(SudokuPuzzle sudokuPuzzle)
     {
-      var saveFileDialog = new SaveFileDialog()
+      var saveFileDialog = new SaveFileDialog
       {
         Filter = _dialogFilter
       };

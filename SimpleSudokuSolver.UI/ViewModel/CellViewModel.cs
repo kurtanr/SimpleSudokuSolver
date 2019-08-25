@@ -1,5 +1,4 @@
 ﻿using SimpleSudokuSolver.Model;
-using System;
 using System.ComponentModel;
 
 namespace SimpleSudokuSolver.UI.ViewModel
@@ -48,7 +47,7 @@ namespace SimpleSudokuSolver.UI.ViewModel
       get { return Cell.Value != 0 ? Cell.Value.ToString() : string.Empty; }
     }
 
-    public CellViewModel(Cell cell, bool showTooltip = false)
+    public CellViewModel(Cell cell, bool showTooltip)
     {
       Cell = cell;
       ShowTooltip = showTooltip;

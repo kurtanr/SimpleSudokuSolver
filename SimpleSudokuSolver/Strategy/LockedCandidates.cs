@@ -25,7 +25,6 @@ namespace SimpleSudokuSolver.Strategy
       {
         var blockCells = block.Cells.OfType<Cell>();
         var cellsWithValue = blockCells.Where(x => x.HasValue).ToArray();
-        var cellsWithNoValue = blockCells.Where(x => !x.HasValue).ToArray();
         var possibleCellValuesInBlock = sudokuPuzzle.PossibleCellValues.Except(
           cellsWithValue.Select(x => x.Value)).ToArray();
 

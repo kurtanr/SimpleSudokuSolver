@@ -236,7 +236,7 @@ namespace SimpleSudokuSolver.Tests.Model
       Assert.That(sudokuPuzzle.Steps.Count, Is.EqualTo(2));
       Assert.That(sudokuPuzzle.NumberOfSteps, Is.EqualTo(2));
       Assert.That(sudokuPuzzle.Steps.Last().Strategy, Is.EqualTo(strategyWhichFindsResult.StrategyName));
-      Assert.That(sudokuPuzzle.Cells[4,7].Value, Is.EqualTo(5));
+      Assert.That(sudokuPuzzle.Cells[4, 7].Value, Is.EqualTo(5));
       Assert.That(sudokuPuzzle.Steps.Last().SolutionDescription, Is.Not.Empty);
     }
 
@@ -286,7 +286,7 @@ namespace SimpleSudokuSolver.Tests.Model
       Assert.That(step.Result, Is.Null);
       Assert.That(step.Strategy, Is.EqualTo(strategyWhichReducesCandidates.StrategyName));
       Assert.That(step.SolutionDescription, Is.Not.Empty);
-      CollectionAssert.AreEqual(sudokuPuzzle.Cells[4, 7].CanBe, new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 });
+      CollectionAssert.AreEqual(sudokuPuzzle.Cells[4, 7].CanBe, new[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 });
     }
 
     [Test]

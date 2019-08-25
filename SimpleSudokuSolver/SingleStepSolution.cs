@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Text;
 
 namespace SimpleSudokuSolver
@@ -13,7 +14,7 @@ namespace SimpleSudokuSolver
     /// <summary>
     /// Contains value and zero-based row and column index of the cell.
     /// </summary>
-    public class Candidate
+    public class Candidate : IEquatable<Candidate>
     {
       public Candidate(int indexOfRow, int indexOfColumn, int value)
       {
@@ -66,10 +67,15 @@ namespace SimpleSudokuSolver
 
       public override bool Equals(object obj)
       {
-        return obj is Candidate candidate &&
-               IndexOfRow == candidate.IndexOfRow &&
-               IndexOfColumn == candidate.IndexOfColumn &&
-               Value == candidate.Value;
+        return Equals(obj as Candidate);
+      }
+
+      public bool Equals(Candidate other)
+      {
+        return other != null &&
+               IndexOfRow == other.IndexOfRow &&
+               IndexOfColumn == other.IndexOfColumn &&
+               Value == other.Value;
       }
 
       public override int GetHashCode()

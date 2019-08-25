@@ -6,7 +6,7 @@ namespace SimpleSudokuSolver
   /// <summary>
   /// Default sudoku solver.
   /// </summary>
-  public partial class DefaultSolver : ISudokuSolver
+  public class DefaultSolver : ISudokuSolver
   {
     private SudokuPuzzle _sudokuPuzzleAfterFailedSolveSingleStep;
     private readonly BasicElimination _basicElimination = new BasicElimination();
