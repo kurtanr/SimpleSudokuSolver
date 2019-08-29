@@ -19,7 +19,7 @@ Repository contains tests for the library and a UI which uses the library and ca
 Out of the well known [Sudoku Solving Techniques](https://sudoku9x9.com/sudoku_solving_techniques_9x9.html), the solver currently implements:
 *   Hidden Single
 *   Naked Single
-*   Locked Candidates
+*   Locked Candidates (Pointing)
 *   Naked Pair
 *   Naked Triple
 *   Naked Quad

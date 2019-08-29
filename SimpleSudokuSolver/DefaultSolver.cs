@@ -33,7 +33,7 @@ namespace SimpleSudokuSolver
           new SingleInCells(),
           new HiddenSingle(),
           new NakedSingle(),
-          new LockedCandidates(),
+          new LockedCandidatesPointing(),
           new NakedPair(),
           new NakedTriple(),
           new NakedQuad(),

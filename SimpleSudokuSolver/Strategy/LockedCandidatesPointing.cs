@@ -12,10 +12,11 @@ namespace SimpleSudokuSolver.Strategy
   /// <remarks>
   /// See also:
   /// - https://sudoku9x9.com/locked_candidates.html
+  /// - http://www.sudokuwiki.org/Intersection_Removal (Pointing Pairs, Pointing Triples)
   /// </remarks>
-  public class LockedCandidates : ISudokuSolverStrategy
+  public class LockedCandidatesPointing : ISudokuSolverStrategy
   {
-    public string StrategyName => "Locked Candidates";
+    public string StrategyName => "Locked Candidates (Pointing)";
 
     public SingleStepSolution SolveSingleStep(SudokuPuzzle sudokuPuzzle)
     {

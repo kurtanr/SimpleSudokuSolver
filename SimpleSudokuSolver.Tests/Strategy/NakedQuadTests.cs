@@ -44,7 +44,7 @@ namespace SimpleSudokuSolver.Tests.Strategy
       var sudoku = new int[,]
       {
         // From: http://www.manifestmaster.com/jetsudoku/nakedQuad.html
-        // Naked quad in column - must first use LockedCandidates to eliminate some candidates
+        // Naked quad in column - must first use LockedCandidatesPointing to eliminate some candidates
         { 0,0,0,0,9,0,0,0,0 },
         { 0,0,0,0,3,1,6,0,0 },
         { 0,0,0,0,4,8,0,9,0 },
@@ -57,7 +57,7 @@ namespace SimpleSudokuSolver.Tests.Strategy
       };
 
       var sudokuPuzzle = new SudokuPuzzle(sudoku);
-      SolveUsingStrategy(sudokuPuzzle, new LockedCandidates());
+      SolveUsingStrategy(sudokuPuzzle, new LockedCandidatesPointing());
       SolveUsingStrategy(sudokuPuzzle, _strategy);
 
       CollectionAssert.DoesNotContain(sudokuPuzzle.Cells[0, 2].CanBe, 3);
