@@ -24,7 +24,7 @@ namespace SimpleSudokuSolver.Strategy
 
       foreach (var block in sudokuPuzzle.Blocks)
       {
-        var blockCells = block.Cells.OfType<Cell>();
+        var blockCells = block.Cells.OfType<Cell>().ToArray();
         var cellsWithValue = blockCells.Where(x => x.HasValue).ToArray();
         var possibleCellValuesInBlock = sudokuPuzzle.PossibleCellValues.Except(
           cellsWithValue.Select(x => x.Value)).ToArray();

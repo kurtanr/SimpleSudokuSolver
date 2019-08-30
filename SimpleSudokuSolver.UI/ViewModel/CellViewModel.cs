@@ -8,7 +8,7 @@ namespace SimpleSudokuSolver.UI.ViewModel
     private bool _isSelected;
     public bool IsSelected
     {
-      get { return _isSelected; }
+      get => _isSelected;
       set
       {
         _isSelected = value;
@@ -19,7 +19,7 @@ namespace SimpleSudokuSolver.UI.ViewModel
     private bool _isActive;
     public bool IsActive
     {
-      get { return _isActive; }
+      get => _isActive;
       set
       {
         _isActive = value;

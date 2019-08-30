@@ -38,31 +38,31 @@
         <Border BorderThickness="1" BorderBrush="Black" Style="{x:Null}" Padding="2" Margin="0">
             <UniformGrid>
                 <Border>
-                    <TextBlock x:Name="text1" Text="{Binding Value}" ToolTip="{Binding Tooltip}" />
+                    <TextBlock x:Name="Text1" Text="{Binding Value}" ToolTip="{Binding Tooltip}" />
                 </Border>
                 <Border>
-                    <TextBlock x:Name="text2" Text="{Binding Value}" ToolTip="{Binding Tooltip}" />
+                    <TextBlock x:Name="Text2" Text="{Binding Value}" ToolTip="{Binding Tooltip}" />
                 </Border>
                 <Border>
-                    <TextBlock x:Name="text3" Text="{Binding Value}" ToolTip="{Binding Tooltip}" />
+                    <TextBlock x:Name="Text3" Text="{Binding Value}" ToolTip="{Binding Tooltip}" />
                 </Border>
                 <Border>
-                    <TextBlock x:Name="text4" Text="{Binding Value}" ToolTip="{Binding Tooltip}" />
+                    <TextBlock x:Name="Text4" Text="{Binding Value}" ToolTip="{Binding Tooltip}" />
                 </Border>
                 <Border>
-                    <TextBlock x:Name="text5" Text="{Binding Value}" ToolTip="{Binding Tooltip}" />
+                    <TextBlock x:Name="Text5" Text="{Binding Value}" ToolTip="{Binding Tooltip}" />
                 </Border>
                 <Border>
-                    <TextBlock x:Name="text6" Text="{Binding Value}" ToolTip="{Binding Tooltip}" />
+                    <TextBlock x:Name="Text6" Text="{Binding Value}" ToolTip="{Binding Tooltip}" />
                 </Border>
                 <Border>
-                    <TextBlock x:Name="text7" Text="{Binding Value}" ToolTip="{Binding Tooltip}" />
+                    <TextBlock x:Name="Text7" Text="{Binding Value}" ToolTip="{Binding Tooltip}" />
                 </Border>
                 <Border>
-                    <TextBlock x:Name="text8" Text="{Binding Value}" ToolTip="{Binding Tooltip}" />
+                    <TextBlock x:Name="Text8" Text="{Binding Value}" ToolTip="{Binding Tooltip}" />
                 </Border>
                 <Border>
-                    <TextBlock x:Name="text9" Text="{Binding Value}" ToolTip="{Binding Tooltip}" />
+                    <TextBlock x:Name="Text9" Text="{Binding Value}" ToolTip="{Binding Tooltip}" />
                 </Border>
             </UniformGrid>
         </Border>

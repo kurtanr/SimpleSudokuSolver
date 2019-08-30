@@ -45,9 +45,9 @@ namespace SimpleSudokuSolver
       public static bool operator ==(Candidate lhs, Candidate rhs)
       {
         // Check for null on left side.
-        if (object.ReferenceEquals(lhs, null))
+        if (ReferenceEquals(lhs, null))
         {
-          if (object.ReferenceEquals(rhs, null))
+          if (ReferenceEquals(rhs, null))
           {
             // null == null = true.
             return true;

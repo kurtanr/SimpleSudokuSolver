@@ -17,15 +17,15 @@ namespace SimpleSudokuSolver.UI
       if (cellViewModels == null)
         return;
 
-      text1.DataContext = cellViewModels[0];
-      text2.DataContext = cellViewModels[1];
-      text3.DataContext = cellViewModels[2];
-      text4.DataContext = cellViewModels[3];
-      text5.DataContext = cellViewModels[4];
-      text6.DataContext = cellViewModels[5];
-      text7.DataContext = cellViewModels[6];
-      text8.DataContext = cellViewModels[7];
-      text9.DataContext = cellViewModels[8];
+      Text1.DataContext = cellViewModels[0];
+      Text2.DataContext = cellViewModels[1];
+      Text3.DataContext = cellViewModels[2];
+      Text4.DataContext = cellViewModels[3];
+      Text5.DataContext = cellViewModels[4];
+      Text6.DataContext = cellViewModels[5];
+      Text7.DataContext = cellViewModels[6];
+      Text8.DataContext = cellViewModels[7];
+      Text9.DataContext = cellViewModels[8];
     }
   }
 }

@@ -11,7 +11,7 @@ namespace SimpleSudokuSolver.Tests.Strategy
     [Test]
     public void LockedCandidatesPointingInColumnTest()
     {
-      var sudoku = new int[,]
+      var sudoku = new [,]
       {
         // From: https://sudoku9x9.com/locked_candidates.html
         { 0,1,2,0,0,0,0,0,0 },
@@ -40,7 +40,7 @@ namespace SimpleSudokuSolver.Tests.Strategy
     public void LockedCandidatesPointingInRowTest()
     {
       // From: https://sudoku9x9.com/locked_candidates.html, transposed
-      var sudoku = new int[,]
+      var sudoku = new [,]
       {
         { 0,0,0,0,0,0,0,0,0 },
         { 1,0,5,0,0,0,0,0,0 },
@@ -67,7 +67,7 @@ namespace SimpleSudokuSolver.Tests.Strategy
     [Test]
     public void LockedCandidatesPointingTest1()
     {
-      var sudoku = new int[,]
+      var sudoku = new [,]
       {
         // From: http://www.sudokuwiki.org/Intersection_Removal
         { 0,1,7,9,0,3,6,0,0 },
@@ -97,7 +97,7 @@ namespace SimpleSudokuSolver.Tests.Strategy
     [Test]
     public void LockedCandidatesPointingTest2()
     {
-      var sudoku = new int[,]
+      var sudoku = new [,]
       {
         // From: http://www.sudokuwiki.org/Intersection_Removal
         { 0,3,2,0,0,6,1,0,0 },
@@ -151,7 +151,7 @@ namespace SimpleSudokuSolver.Tests.Strategy
     [Test]
     public void LockedCandidatesPointingTest3()
     {
-      var sudoku = new int[,]
+      var sudoku = new [,]
       {
         // From: http://www.sudokuwiki.org/Intersection_Removal
         { 9,3,0,0,5,0,0,0,0 },

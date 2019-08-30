@@ -1,6 +1,5 @@
 ﻿using NUnit.Framework;
 using SimpleSudokuSolver.Strategy;
-using System.Linq;
 
 namespace SimpleSudokuSolver.Tests
 {
@@ -38,7 +37,7 @@ namespace SimpleSudokuSolver.Tests
     }
 
     [Test]
-    public void SolveSingleStepForSolvedPuzle_ReturnsNull_Test()
+    public void SolveSingleStepForSolvedPuzzle_ReturnsNull_Test()
     {
       var defaultSolver = new DefaultSolver();
       var sudokuPuzzle = defaultSolver.Solve(_sudoku);

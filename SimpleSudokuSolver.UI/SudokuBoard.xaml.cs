@@ -63,13 +63,16 @@ namespace SimpleSudokuSolver.UI
         return;
 
       var descriptor1 = DependencyPropertyDescriptor.FromProperty(SudokuPuzzleProperty, typeof(SudokuBoard));
-      descriptor1.AddValueChanged(this, new System.EventHandler((s, args) => { BindPuzzle(); }));
+      descriptor1.AddValueChanged(this, (s, args) => { BindPuzzle(); });
 
       var descriptor2 = DependencyPropertyDescriptor.FromProperty(ShowCandidatesProperty, typeof(SudokuBoard));
-      descriptor2.AddValueChanged(this, new System.EventHandler((s, args) => { ToggleShowCandidates(); }));
+      descriptor2.AddValueChanged(this, (s, args) => { ToggleShowCandidates(); });
 
       var window = Window.GetWindow(this);
-      window.KeyDown += OnKeyDown;
+      if (window != null)
+      {
+        window.KeyDown += OnKeyDown;
+      }
     }
 
     private void OnKeyDown(object sender, KeyEventArgs e)
@@ -113,15 +116,13 @@ namespace SimpleSudokuSolver.UI
 
     private void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
     {
-      var frameworkElement = e.OriginalSource as FrameworkElement;
-      if (frameworkElement.DataContext is CellViewModel cellViewModel)
+      if(e.OriginalSource is FrameworkElement frameworkElement && frameworkElement.DataContext is CellViewModel cellViewModel)
       {
         SetActiveCell(cellViewModel.Cell);
 
         // Fixes issue with arrow keys no longer working once user clicks inside the text box
         var window = Window.GetWindow(frameworkElement);
-        var textBox = Keyboard.FocusedElement as TextBox;
-        if (window != null && textBox != null)
+        if (window != null && Keyboard.FocusedElement is TextBox textBox)
         {
           DependencyObject scope = FocusManager.GetFocusScope(textBox);
           FocusManager.SetFocusedElement(scope, window);
@@ -139,15 +140,15 @@ namespace SimpleSudokuSolver.UI
       _cellViewModels.Clear();
       SetActiveCell(null);
 
-      SetCellViewModelsForBlock(block1, SudokuPuzzle.Blocks[0, 0]);
-      SetCellViewModelsForBlock(block2, SudokuPuzzle.Blocks[0, 1]);
-      SetCellViewModelsForBlock(block3, SudokuPuzzle.Blocks[0, 2]);
-      SetCellViewModelsForBlock(block4, SudokuPuzzle.Blocks[1, 0]);
-      SetCellViewModelsForBlock(block5, SudokuPuzzle.Blocks[1, 1]);
-      SetCellViewModelsForBlock(block6, SudokuPuzzle.Blocks[1, 2]);
-      SetCellViewModelsForBlock(block7, SudokuPuzzle.Blocks[2, 0]);
-      SetCellViewModelsForBlock(block8, SudokuPuzzle.Blocks[2, 1]);
-      SetCellViewModelsForBlock(block9, SudokuPuzzle.Blocks[2, 2]);
+      SetCellViewModelsForBlock(Block1, SudokuPuzzle.Blocks[0, 0]);
+      SetCellViewModelsForBlock(Block2, SudokuPuzzle.Blocks[0, 1]);
+      SetCellViewModelsForBlock(Block3, SudokuPuzzle.Blocks[0, 2]);
+      SetCellViewModelsForBlock(Block4, SudokuPuzzle.Blocks[1, 0]);
+      SetCellViewModelsForBlock(Block5, SudokuPuzzle.Blocks[1, 1]);
+      SetCellViewModelsForBlock(Block6, SudokuPuzzle.Blocks[1, 2]);
+      SetCellViewModelsForBlock(Block7, SudokuPuzzle.Blocks[2, 0]);
+      SetCellViewModelsForBlock(Block8, SudokuPuzzle.Blocks[2, 1]);
+      SetCellViewModelsForBlock(Block9, SudokuPuzzle.Blocks[2, 2]);
 
       var lastUpdatedCellIndex = ((MainViewModel)DataContext).LastUpdatedCellIndex;
       if (lastUpdatedCellIndex != null)
@@ -162,15 +163,15 @@ namespace SimpleSudokuSolver.UI
 
     private void ToggleShowCandidates()
     {
-      ToggleCellViewModelTooltip(block1);
-      ToggleCellViewModelTooltip(block2);
-      ToggleCellViewModelTooltip(block3);
-      ToggleCellViewModelTooltip(block4);
-      ToggleCellViewModelTooltip(block5);
-      ToggleCellViewModelTooltip(block6);
-      ToggleCellViewModelTooltip(block7);
-      ToggleCellViewModelTooltip(block8);
-      ToggleCellViewModelTooltip(block9);
+      ToggleCellViewModelTooltip(Block1);
+      ToggleCellViewModelTooltip(Block2);
+      ToggleCellViewModelTooltip(Block3);
+      ToggleCellViewModelTooltip(Block4);
+      ToggleCellViewModelTooltip(Block5);
+      ToggleCellViewModelTooltip(Block6);
+      ToggleCellViewModelTooltip(Block7);
+      ToggleCellViewModelTooltip(Block8);
+      ToggleCellViewModelTooltip(Block9);
     }
 
     private void ToggleCellViewModelTooltip(SudokuBlock sudokuBlock)

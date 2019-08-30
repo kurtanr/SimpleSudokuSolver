@@ -50,15 +50,15 @@
             </UniformGrid>
 
             <UniformGrid Grid.Row="1" Grid.Column="1" >
-                <local:SudokuBlock x:Name="block1" />
-                <local:SudokuBlock x:Name="block2" />
-                <local:SudokuBlock x:Name="block3" />
-                <local:SudokuBlock x:Name="block4" />
-                <local:SudokuBlock x:Name="block5" />
-                <local:SudokuBlock x:Name="block6" />
-                <local:SudokuBlock x:Name="block7" />
-                <local:SudokuBlock x:Name="block8" />
-                <local:SudokuBlock x:Name="block9" />
+                <local:SudokuBlock x:Name="Block1" />
+                <local:SudokuBlock x:Name="Block2" />
+                <local:SudokuBlock x:Name="Block3" />
+                <local:SudokuBlock x:Name="Block4" />
+                <local:SudokuBlock x:Name="Block5" />
+                <local:SudokuBlock x:Name="Block6" />
+                <local:SudokuBlock x:Name="Block7" />
+                <local:SudokuBlock x:Name="Block8" />
+                <local:SudokuBlock x:Name="Block9" />
             </UniformGrid>
         </Grid>
     </Grid>

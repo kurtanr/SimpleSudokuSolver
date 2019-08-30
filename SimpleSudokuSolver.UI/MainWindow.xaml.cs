@@ -10,12 +10,12 @@ namespace SimpleSudokuSolver.UI
 {
   public partial class MainWindow
   {
-    private const string _dialogFilter = "Text files (*.txt)|*.txt|All files (*.*)|*.*";
+    private const string DialogFilter = "Text files (*.txt)|*.txt|All files (*.*)|*.*";
 
     public MainWindow()
     {
       InitializeComponent();
-      textBox.TextChanged += (s, e) => textBox.ScrollToEnd();
+      TextBox.TextChanged += (s, e) => TextBox.ScrollToEnd();
 
       var puzzleProvider = new TrueMagicSudokuGeneratorPuzzleProvider();
       var solver = new DefaultSolver();
@@ -33,7 +33,7 @@ namespace SimpleSudokuSolver.UI
       var openFileDialog = new OpenFileDialog
       {
         CheckFileExists = true,
-        Filter = _dialogFilter
+        Filter = DialogFilter
       };
       if(openFileDialog.ShowDialog() == true)
       {
@@ -47,7 +47,7 @@ namespace SimpleSudokuSolver.UI
     {
       var saveFileDialog = new SaveFileDialog
       {
-        Filter = _dialogFilter
+        Filter = DialogFilter
       };
       if (saveFileDialog.ShowDialog() == true)
       {

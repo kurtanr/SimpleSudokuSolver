@@ -1,8 +1,6 @@
-﻿using System.Windows;
-
-namespace SimpleSudokuSolver.UI
+﻿namespace SimpleSudokuSolver.UI
 {
-  public partial class App : Application
+  public partial class App
   {
   }
 }

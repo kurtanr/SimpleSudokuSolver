@@ -1,5 +1,4 @@
 ﻿using SimpleSudokuSolver.Model;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace SimpleSudokuSolver.Strategy
@@ -32,7 +31,7 @@ namespace SimpleSudokuSolver.Strategy
       foreach (var block in sudokuPuzzle.Blocks)
       {
         StrategyName = "Single in Block";
-        var blockSolution = GetSingleInCells(sudokuPuzzle, block.Cells.OfType<Cell>());
+        var blockSolution = GetSingleInCells(sudokuPuzzle, block.Cells.OfType<Cell>().ToArray());
         if (blockSolution != null)
           return blockSolution;
       }
@@ -40,7 +39,7 @@ namespace SimpleSudokuSolver.Strategy
       return null;
     }
 
-    private SingleStepSolution GetSingleInCells(SudokuPuzzle sudokuPuzzle, IEnumerable<Cell> cells)
+    private SingleStepSolution GetSingleInCells(SudokuPuzzle sudokuPuzzle, Cell[] cells)
     {
       var cellsWithNoValue = cells.Where(x => !x.HasValue).ToArray();
 

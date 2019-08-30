@@ -114,7 +114,7 @@ namespace SimpleSudokuSolver.Strategy
     }
 
     /// <summary>
-    /// Flattens the array of enumerables into a single array and returns unique items of that array (no repetition).
+    /// Flattens the array of enumerable into a single array and returns unique items of that array (no repetition).
     /// </summary>
     private int[] GetDistinctPotentialCellValuesInCandidates(params IEnumerable<int>[] items)
     {

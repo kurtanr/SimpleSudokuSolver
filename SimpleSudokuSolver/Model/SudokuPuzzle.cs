@@ -27,7 +27,7 @@ namespace SimpleSudokuSolver.Model
       NumberOfRowsOrColumnsInPuzzle = sudoku.GetLength(0);
 
       // We assume a square puzzle.
-      NumberOfRowsOrColumnsInBlock = (int)System.Math.Sqrt(NumberOfRowsOrColumnsInPuzzle);
+      NumberOfRowsOrColumnsInBlock = (int)Math.Sqrt(NumberOfRowsOrColumnsInPuzzle);
 
       Cells = new Cell[NumberOfRowsOrColumnsInPuzzle, NumberOfRowsOrColumnsInPuzzle];
       Rows = new Row[NumberOfRowsOrColumnsInPuzzle];

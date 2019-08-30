@@ -38,7 +38,7 @@ namespace SimpleSudokuSolver.Tests.Model
       row.Cells[3] = new Cell(4);
       row.Cells[8] = new Cell(0);
       toString = row.ToString();
-      Assert.That(toString, Is.EqualTo($"1     4         0"));
+      Assert.That(toString, Is.EqualTo("1     4         0"));
     }
   }
 }
