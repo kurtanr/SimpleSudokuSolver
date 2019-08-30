@@ -11,7 +11,7 @@ namespace SimpleSudokuSolver.Tests.Strategy
     [Test]
     public void NakedSingleTest1()
     {
-      var sudoku = new [,]
+      var sudoku = new[,]
       {
         // From: http://www.sudokuwiki.org/Getting_Started
         { 2,4,6,0,7,0,0,3,8 },
@@ -34,7 +34,7 @@ namespace SimpleSudokuSolver.Tests.Strategy
     [Test]
     public void NakedSingleTest2()
     {
-      var sudoku = new [,]
+      var sudoku = new[,]
       {
         // From: https://sudoku9x9.com/naked_single.html
         { 0,0,0,1,0,2,0,0,0 },

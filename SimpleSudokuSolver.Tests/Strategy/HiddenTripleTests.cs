@@ -11,7 +11,7 @@ namespace SimpleSudokuSolver.Tests.Strategy
     [Test]
     public void HiddenTripleTest1()
     {
-      var sudoku = new [,]
+      var sudoku = new[,]
       {
         // From: http://www.sudokuwiki.org/Hidden_Candidates
         { 0,0,0,0,0,1,0,3,0 },

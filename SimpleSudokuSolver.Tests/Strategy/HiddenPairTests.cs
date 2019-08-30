@@ -11,7 +11,7 @@ namespace SimpleSudokuSolver.Tests.Strategy
     [Test]
     public void HiddenPairTest1()
     {
-      var sudoku = new [,]
+      var sudoku = new[,]
       {
         // From: http://www.sudokuwiki.org/Hidden_Candidates
         { 0,0,0,0,0,0,0,0,0 },
@@ -43,7 +43,7 @@ namespace SimpleSudokuSolver.Tests.Strategy
     [Test]
     public void HiddenPairTest2()
     {
-      var sudoku = new [,]
+      var sudoku = new[,]
       {
         // From: http://www.sudokuwiki.org/Hidden_Candidates
         { 7,2,0,4,0,8,0,3,0 },

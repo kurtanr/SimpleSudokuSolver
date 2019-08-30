@@ -111,14 +111,7 @@ namespace SimpleSudokuSolver.Strategy
     /// </summary>
     private int[] GetDistinctPotentialCellValuesInCandidates(params IEnumerable<int>[] items)
     {
-      List<int> result = new List<int>();
-
-      foreach (var item in items)
-      {
-        result.AddRange(item);
-      }
-
-      return result.Distinct().ToArray();
+      return items.SelectMany(x => x).Distinct().ToArray();
     }
   }
 }

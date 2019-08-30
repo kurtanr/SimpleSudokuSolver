@@ -12,7 +12,7 @@ namespace SimpleSudokuSolver.Tests.Strategy
     public void NakedPairInRowTest()
     {
       // From: https://sudoku9x9.com/naked_pair.html
-      var sudoku = new [,]
+      var sudoku = new[,]
       {
         { 9,0,0,4,0,0,1,0,0 },
         { 0,5,6,0,0,0,0,0,0 },
@@ -37,7 +37,7 @@ namespace SimpleSudokuSolver.Tests.Strategy
     public void NakedPairInColumnTest()
     {
       // From: https://sudoku9x9.com/naked_pair.html, transposed
-      var sudoku = new [,]
+      var sudoku = new[,]
       {
         { 9,0,0,0,0,0,0,0,0 },
         { 0,5,7,0,0,0,0,0,0 },
@@ -61,7 +61,7 @@ namespace SimpleSudokuSolver.Tests.Strategy
     [Test]
     public void NakedPairTest1()
     {
-      var sudoku = new [,]
+      var sudoku = new[,]
       {
         // From: http://www.sudokuwiki.org/Naked_Candidates
         { 4,0,0,0,0,0,9,3,8 },
@@ -92,7 +92,7 @@ namespace SimpleSudokuSolver.Tests.Strategy
     [Test]
     public void NakedPairTest2()
     {
-      var sudoku = new [,]
+      var sudoku = new[,]
       {
         // From: http://www.sudokuwiki.org/Naked_Candidates
         { 0,8,0,0,9,0,0,3,0 },

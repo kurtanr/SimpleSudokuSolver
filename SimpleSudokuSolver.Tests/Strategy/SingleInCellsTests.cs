@@ -11,7 +11,7 @@ namespace SimpleSudokuSolver.Tests.Strategy
     [Test]
     public void SingleInCellsTest1()
     {
-      var sudoku = new [,]
+      var sudoku = new[,]
       {
         { 0,0,0,0,0,0,0,1,0 },
         { 0,0,0,0,0,0,0,2,0 },

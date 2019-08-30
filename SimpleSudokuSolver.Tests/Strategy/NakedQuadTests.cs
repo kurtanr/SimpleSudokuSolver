@@ -11,7 +11,7 @@ namespace SimpleSudokuSolver.Tests.Strategy
     [Test]
     public void NakedQuadTest1()
     {
-      var sudoku = new [,]
+      var sudoku = new[,]
       {
         // From: http://www.sudokuwiki.org/Naked_Candidates
         // Contains one naked quad in block, and after that, one naked quad in row
@@ -41,7 +41,7 @@ namespace SimpleSudokuSolver.Tests.Strategy
     [Test]
     public void NakedQuadTest2()
     {
-      var sudoku = new [,]
+      var sudoku = new[,]
       {
         // From: http://www.manifestmaster.com/jetsudoku/nakedQuad.html
         // Naked quad in column - must first use LockedCandidatesPointing to eliminate some candidates

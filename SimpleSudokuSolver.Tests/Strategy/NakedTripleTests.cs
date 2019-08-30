@@ -11,7 +11,7 @@ namespace SimpleSudokuSolver.Tests.Strategy
     [Test]
     public void NakedTripleTest1()
     {
-      var sudoku = new [,]
+      var sudoku = new[,]
       {
         // From: http://www.sudokuwiki.org/Naked_Candidates
         { 0,7,0,4,0,8,0,2,9 },
@@ -44,7 +44,7 @@ namespace SimpleSudokuSolver.Tests.Strategy
     [Test]
     public void NakedTripleTest2()
     {
-      var sudoku = new [,]
+      var sudoku = new[,]
       {
         // From: http://www.sudokuwiki.org/Naked_Candidates
         { 2,9,4,5,1,3,0,0,6 },
@@ -84,7 +84,7 @@ namespace SimpleSudokuSolver.Tests.Strategy
     [Test]
     public void NakedTripleTest3()
     {
-      var sudoku = new [,]
+      var sudoku = new[,]
       {
         // From: http://hodoku.sourceforge.net/en/tech_naked.php, Naked Triple
         // http://www.sudokuwiki.org/sudoku.htm?bd=390000700000000650507000349049380506601054983853000400900800134002940865400000297
