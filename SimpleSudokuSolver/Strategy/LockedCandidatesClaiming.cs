@@ -91,11 +91,8 @@ namespace SimpleSudokuSolver.Strategy
       foreach (var item in candidateValuesWhichAppearOnlyInSingleBlock)
       {
         // We could return all the cells, but just one is enough to eliminate other candidates
-        var cellOrNull = cellsWithNoValue.Where(x => x.CanBe.Contains(item)).FirstOrDefault();
-        if (cellOrNull != null)
-        {
-          result.Add(new Tuple<Cell, int>(cellOrNull, item));
-        }
+        var cell = cellsWithNoValue.First(x => x.CanBe.Contains(item));
+        result.Add(new Tuple<Cell, int>(cell, item));
       }
 
       return result;
