@@ -34,6 +34,7 @@ namespace SimpleSudokuSolver
           new HiddenSingle(),
           new NakedSingle(),
           new LockedCandidatesPointing(),
+          new LockedCandidatesClaiming(),
           new NakedPair(),
           new NakedTriple(),
           new NakedQuad(),

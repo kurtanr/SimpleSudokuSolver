@@ -20,6 +20,7 @@ Out of the well known [Sudoku Solving Techniques](https://sudoku9x9.com/sudoku_s
 *   Hidden Single
 *   Naked Single
 *   Locked Candidates (Pointing)
+*   Locked Candidates (Claiming)
 *   Naked Pair
 *   Naked Triple
 *   Naked Quad
