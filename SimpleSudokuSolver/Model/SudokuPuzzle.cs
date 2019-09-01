@@ -79,8 +79,7 @@ namespace SimpleSudokuSolver.Model
       if (singleStepSolution == null)
         return;
 
-      if (singleStepSolution.Result == null &&
-        (singleStepSolution.Eliminations == null || singleStepSolution.Eliminations.Length == 0))
+      if (singleStepSolution.Result == null && singleStepSolution.Eliminations.Length == 0)
         return;
 
       int[] oldCanBe = new int[] { };

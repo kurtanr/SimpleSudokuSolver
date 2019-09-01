@@ -115,6 +115,8 @@ namespace SimpleSudokuSolver
 
     public SingleStepSolution(int indexOfRow, int indexOfColumn, int value, string strategyName)
     {
+      ValidateStrategyName(strategyName);
+
       Eliminations = null;
       Result = new Candidate(indexOfRow, indexOfColumn, value);
       Strategy = strategyName;
@@ -123,6 +125,11 @@ namespace SimpleSudokuSolver
 
     public SingleStepSolution(Candidate[] eliminations, string strategyName)
     {
+      if (eliminations == null)
+        throw new ArgumentNullException(nameof(eliminations));
+
+      ValidateStrategyName(strategyName);
+
       Eliminations = eliminations;
       Result = null;
 
@@ -132,7 +139,7 @@ namespace SimpleSudokuSolver
       var stringBuilder = new StringBuilder();
       stringBuilder.AppendLine($"Eliminated candidates [{strategyName}]:");
 
-      foreach(var groupedElimination in groupedEliminations)
+      foreach (var groupedElimination in groupedEliminations)
       {
         stringBuilder.AppendLine($"- Row {groupedElimination.IndexOfRow + 1} Column {groupedElimination.IndexOfColumn + 1} " +
           $"Values {string.Join(",", groupedElimination.Values)}");
@@ -145,6 +152,15 @@ namespace SimpleSudokuSolver
     public override string ToString()
     {
       return SolutionDescription;
+    }
+
+    private void ValidateStrategyName(string strategyName)
+    {
+      if (strategyName == null)
+        throw new ArgumentNullException(nameof(strategyName));
+
+      if (string.IsNullOrEmpty(strategyName))
+        throw new ArgumentException("Must not be an empty string", nameof(strategyName));
     }
   }
 }

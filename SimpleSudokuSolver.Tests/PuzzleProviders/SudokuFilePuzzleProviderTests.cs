@@ -17,9 +17,11 @@ namespace SimpleSudokuSolver.Tests.PuzzleProviders
     }
 
     [Test]
-    public void SudokuFilePuzzleProvider_WorksWithAllFormats_Test()
+    public void SudokuFilePuzzleProvider_IgnoresCommentsAndEmptyLines_WorksWithAllFormats_Test()
     {
       var filePath = Path.GetTempFileName();
+      File.WriteAllText(filePath, $"#comment{Environment.NewLine} #comment{Environment.NewLine} {Environment.NewLine}");
+
       var separators = new[] { ",", " ", "\t", "" };
       var sudoku = new int[9, 9];
       sudoku[1, 2] = 5;
@@ -39,7 +41,7 @@ namespace SimpleSudokuSolver.Tests.PuzzleProviders
     {
       var sudokuToString = new SudokuPuzzle(sudoku).ToString();
       var sudokuToStringWithSeparator = sudokuToString.Replace(" ", separator);
-      File.WriteAllText(filePath, sudokuToStringWithSeparator);
+      File.AppendAllText(filePath, sudokuToStringWithSeparator);
     }
   }
 }

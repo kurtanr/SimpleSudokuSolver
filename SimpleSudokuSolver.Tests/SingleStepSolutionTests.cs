@@ -7,6 +7,18 @@ namespace SimpleSudokuSolver.Tests
   public class SingleStepSolutionTests
   {
     [Test]
+    public void ConstructorArgumentValidationTest()
+    {
+      var eliminations = new SingleStepSolution.Candidate[0];
+      Assert.That(() => new SingleStepSolution(null, "test"), Throws.InstanceOf<ArgumentNullException>());
+      Assert.That(() => new SingleStepSolution(eliminations, null), Throws.InstanceOf<ArgumentNullException>());
+      Assert.That(() => new SingleStepSolution(eliminations, string.Empty), Throws.InstanceOf<ArgumentException>());
+
+      Assert.That(() => new SingleStepSolution(0, 0, 0, null), Throws.InstanceOf<ArgumentNullException>());
+      Assert.That(() => new SingleStepSolution(0, 0, 0, string.Empty), Throws.InstanceOf<ArgumentException>());
+    }
+
+    [Test]
     public void CandidateEqualityTest()
     {
       var candidate = new SingleStepSolution.Candidate(1, 2, 3);
