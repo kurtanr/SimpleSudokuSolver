@@ -40,7 +40,8 @@ namespace SimpleSudokuSolver
           new NakedQuad(),
           new HiddenPair(),
           new HiddenTriple(),
-          new HiddenQuad()
+          new HiddenQuad(),
+          new XWing()
         };
       }
     }

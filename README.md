@@ -27,3 +27,4 @@ Out of the well known [Sudoku Solving Techniques](https://sudoku9x9.com/sudoku_s
 *   Hidden Pair
 *   Hidden Triple
 *   Hidden Quad
+*   X-Wing
