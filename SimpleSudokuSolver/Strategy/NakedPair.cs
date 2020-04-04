@@ -23,17 +23,17 @@ namespace SimpleSudokuSolver.Strategy
 
       foreach (var row in sudokuPuzzle.Rows)
       {
-        eliminations.AddRange(GetNakedPairEliminations(row.Cells, sudokuPuzzle));
+        eliminations.AddRange(GetNakedPairEliminations(row.Cells));
       }
 
       foreach (var column in sudokuPuzzle.Columns)
       {
-        eliminations.AddRange(GetNakedPairEliminations(column.Cells, sudokuPuzzle));
+        eliminations.AddRange(GetNakedPairEliminations(column.Cells));
       }
 
       foreach (var block in sudokuPuzzle.Blocks)
       {
-        eliminations.AddRange(GetNakedPairEliminations(block.Cells.OfType<Cell>(), sudokuPuzzle));
+        eliminations.AddRange(GetNakedPairEliminations(block.Cells.OfType<Cell>()));
       }
 
       return eliminations.Count > 0 ?
@@ -41,7 +41,7 @@ namespace SimpleSudokuSolver.Strategy
         null;
     }
 
-    private IEnumerable<SingleStepSolution.Candidate> GetNakedPairEliminations(IEnumerable<Cell> cells, SudokuPuzzle sudokuPuzzle)
+    private IEnumerable<SingleStepSolution.Candidate> GetNakedPairEliminations(IEnumerable<Cell> cells)
     {
       var cellsWithNoValue = cells.Where(x => !x.HasValue).ToArray();
       var nakedPairCandidates = cellsWithNoValue.Where(x => x.CanBe.Count == 2).ToArray();

@@ -25,17 +25,17 @@ namespace SimpleSudokuSolver.Strategy
 
       foreach (var row in sudokuPuzzle.Rows)
       {
-        eliminations.AddRange(GetNakedQuadEliminations(row.Cells, sudokuPuzzle));
+        eliminations.AddRange(GetNakedQuadEliminations(row.Cells));
       }
 
       foreach (var column in sudokuPuzzle.Columns)
       {
-        eliminations.AddRange(GetNakedQuadEliminations(column.Cells, sudokuPuzzle));
+        eliminations.AddRange(GetNakedQuadEliminations(column.Cells));
       }
 
       foreach (var block in sudokuPuzzle.Blocks)
       {
-        eliminations.AddRange(GetNakedQuadEliminations(block.Cells.OfType<Cell>(), sudokuPuzzle));
+        eliminations.AddRange(GetNakedQuadEliminations(block.Cells.OfType<Cell>()));
       }
 
       return eliminations.Count > 0 ?
@@ -43,7 +43,7 @@ namespace SimpleSudokuSolver.Strategy
         null;
     }
 
-    private IEnumerable<SingleStepSolution.Candidate> GetNakedQuadEliminations(IEnumerable<Cell> cells, SudokuPuzzle sudokuPuzzle)
+    private IEnumerable<SingleStepSolution.Candidate> GetNakedQuadEliminations(IEnumerable<Cell> cells)
     {
       var cellsWithNoValue = cells.Where(x => !x.HasValue).ToArray();
       var eliminations = new List<SingleStepSolution.Candidate>();
@@ -77,7 +77,7 @@ namespace SimpleSudokuSolver.Strategy
                 var nakedQuad = new Tuple<Cell, Cell, Cell, Cell>(first, second, third, fourth);
 
                 eliminations.AddRange(GetNakedQuadEliminationsCore(
-                  nakedQuad, distinctPotentialCellValuesInCandidates, cellsWithNoValue, sudokuPuzzle));
+                  nakedQuad, distinctPotentialCellValuesInCandidates, cellsWithNoValue));
               }
             }
           }
@@ -89,7 +89,7 @@ namespace SimpleSudokuSolver.Strategy
 
     private IEnumerable<SingleStepSolution.Candidate> GetNakedQuadEliminationsCore(
       Tuple<Cell, Cell, Cell, Cell> nakedQuad, int[] distinctPotentialCellValuesInCandidates,
-      Cell[] cellsWithNoValue, SudokuPuzzle sudokuPuzzle)
+      Cell[] cellsWithNoValue)
     {
       var eliminations = new List<SingleStepSolution.Candidate>();
 

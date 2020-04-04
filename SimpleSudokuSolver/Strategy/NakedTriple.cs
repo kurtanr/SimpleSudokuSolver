@@ -25,17 +25,17 @@ namespace SimpleSudokuSolver.Strategy
 
       foreach (var row in sudokuPuzzle.Rows)
       {
-        eliminations.AddRange(GetNakedTripleEliminations(row.Cells, sudokuPuzzle));
+        eliminations.AddRange(GetNakedTripleEliminations(row.Cells));
       }
 
       foreach (var column in sudokuPuzzle.Columns)
       {
-        eliminations.AddRange(GetNakedTripleEliminations(column.Cells, sudokuPuzzle));
+        eliminations.AddRange(GetNakedTripleEliminations(column.Cells));
       }
 
       foreach (var block in sudokuPuzzle.Blocks)
       {
-        eliminations.AddRange(GetNakedTripleEliminations(block.Cells.OfType<Cell>(), sudokuPuzzle));
+        eliminations.AddRange(GetNakedTripleEliminations(block.Cells.OfType<Cell>()));
       }
 
       return eliminations.Count > 0 ?
@@ -43,7 +43,7 @@ namespace SimpleSudokuSolver.Strategy
         null;
     }
 
-    private IEnumerable<SingleStepSolution.Candidate> GetNakedTripleEliminations(IEnumerable<Cell> cells, SudokuPuzzle sudokuPuzzle)
+    private IEnumerable<SingleStepSolution.Candidate> GetNakedTripleEliminations(IEnumerable<Cell> cells)
     {
       var cellsWithNoValue = cells.Where(x => !x.HasValue).ToArray();
       var eliminations = new List<SingleStepSolution.Candidate>();
@@ -73,7 +73,7 @@ namespace SimpleSudokuSolver.Strategy
               var nakedTriple = new Tuple<Cell, Cell, Cell>(first, second, third);
 
               eliminations.AddRange(GetNakedTripleEliminationsCore(
-                nakedTriple, distinctPotentialCellValuesInCandidates, cellsWithNoValue, sudokuPuzzle));
+                nakedTriple, distinctPotentialCellValuesInCandidates, cellsWithNoValue));
             }
           }
         }
@@ -83,7 +83,7 @@ namespace SimpleSudokuSolver.Strategy
     }
 
     private IEnumerable<SingleStepSolution.Candidate> GetNakedTripleEliminationsCore(
-      Tuple<Cell, Cell, Cell> nakedTriple, int[] distinctPotentialCellValuesInCandidates, Cell[] cellsWithNoValue, SudokuPuzzle sudokuPuzzle)
+      Tuple<Cell, Cell, Cell> nakedTriple, int[] distinctPotentialCellValuesInCandidates, Cell[] cellsWithNoValue)
     {
       var eliminations = new List<SingleStepSolution.Candidate>();
 
