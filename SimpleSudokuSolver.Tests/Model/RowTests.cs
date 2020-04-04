@@ -34,9 +34,9 @@ namespace SimpleSudokuSolver.Tests.Model
       var toString = row.ToString();
       Assert.That(toString, Is.EqualTo(new string(' ', 17)));
 
-      row.Cells[0] = new Cell(1);
-      row.Cells[3] = new Cell(4);
-      row.Cells[8] = new Cell(0);
+      row.Cells[0] = new Cell(1, 0, 0);
+      row.Cells[3] = new Cell(4, 0, 3);
+      row.Cells[8] = new Cell(0, 0, 8);
       toString = row.ToString();
       Assert.That(toString, Is.EqualTo("1     4         0"));
     }

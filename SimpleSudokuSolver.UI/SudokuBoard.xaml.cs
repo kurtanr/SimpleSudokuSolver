@@ -91,8 +91,7 @@ namespace SimpleSudokuSolver.UI
         return;
 
       // if value is not correct or solver cannot solve the puzzle (so we do not know if the value is correct), we do not allow it
-      var cellIndex = SudokuPuzzle.GetCellIndex(_activeCell.Cell);
-      var solvedValue = SolvedSudokuPuzzle.Cells[cellIndex.RowIndex, cellIndex.ColumnIndex].Value;
+      var solvedValue = SolvedSudokuPuzzle.Cells[_activeCell.Cell.RowIndex, _activeCell.Cell.ColumnIndex].Value;
 
       var mainViewModel = (MainViewModel)DataContext;
       if (solvedValue == 0)
@@ -102,11 +101,11 @@ namespace SimpleSudokuSolver.UI
       }
       if (enteredValue != solvedValue)
       {
-        mainViewModel.AppendMessage($"Row {cellIndex.RowIndex + 1} Column {cellIndex.ColumnIndex + 1} Value {enteredValue} [Wrong value entered by user]");
+        mainViewModel.AppendMessage($"Row {_activeCell.Cell.RowIndex + 1} Column {_activeCell.Cell.ColumnIndex + 1} Value {enteredValue} [Wrong value entered by user]");
         return;
       }
 
-      var solution = new SingleStepSolution(cellIndex.RowIndex, cellIndex.ColumnIndex, enteredValue, "Entered by user");
+      var solution = new SingleStepSolution(_activeCell.Cell.RowIndex, _activeCell.Cell.ColumnIndex, enteredValue, "Entered by user");
       SudokuPuzzle.ApplySingleStepSolution(solution);
       _activeCell.NotifyCellValueChanged();
       SetSelection(_activeCell);
@@ -228,13 +227,11 @@ namespace SimpleSudokuSolver.UI
       }
       else
       {
-        var activeCellIndex = SudokuPuzzle.GetCellIndex(_activeCell.Cell);
-
-        var proposedRowIndex = activeCellIndex.RowIndex + rowOffset;
+        var proposedRowIndex = _activeCell.Cell.RowIndex + rowOffset;
         var rowIndex = (proposedRowIndex < 0) ? maxIndex :
           proposedRowIndex % SudokuPuzzle.NumberOfRowsOrColumnsInPuzzle;
 
-        var proposedColumnIndex = activeCellIndex.ColumnIndex + columnOffset;
+        var proposedColumnIndex = _activeCell.Cell.ColumnIndex + columnOffset;
         var columnIndex = (proposedColumnIndex < 0) ? maxIndex :
           proposedColumnIndex % SudokuPuzzle.NumberOfRowsOrColumnsInPuzzle;
 
@@ -280,15 +277,12 @@ namespace SimpleSudokuSolver.UI
       if (SudokuPuzzle == null)
         return;
 
-      var selectedCellIndex = SudokuPuzzle.GetCellIndex(selectedCellViewModel.Cell);
-
       foreach (var cellViewModel in _cellViewModels)
       {
-        var index = SudokuPuzzle.GetCellIndex(cellViewModel.Cell);
         var hasValue = cellViewModel.Cell.HasValue;
         var hasSameValue = cellViewModel.Cell.Value == selectedCellViewModel.Cell.Value;
-        var isInSameRow = selectedCellIndex.RowIndex == index.RowIndex;
-        var isInSameColumn = selectedCellIndex.ColumnIndex == index.ColumnIndex;
+        var isInSameRow = selectedCellViewModel.Cell.RowIndex == cellViewModel.Cell.RowIndex;
+        var isInSameColumn = selectedCellViewModel.Cell.ColumnIndex == cellViewModel.Cell.ColumnIndex;
 
         if (isInSameRow || isInSameColumn || (hasValue && hasSameValue))
         {

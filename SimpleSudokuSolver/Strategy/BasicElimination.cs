@@ -19,19 +19,19 @@ namespace SimpleSudokuSolver.Strategy
       foreach (var row in sudokuPuzzle.Rows)
       {
         var cells = row.Cells;
-        eliminations.AddRange(GetEliminations(cells, sudokuPuzzle));
+        eliminations.AddRange(GetEliminations(cells));
       }
 
       foreach (var column in sudokuPuzzle.Columns)
       {
         var cells = column.Cells;
-        eliminations.AddRange(GetEliminations(cells, sudokuPuzzle));
+        eliminations.AddRange(GetEliminations(cells));
       }
 
       foreach (var block in sudokuPuzzle.Blocks)
       {
         var cells = block.Cells.OfType<Cell>().ToArray();
-        eliminations.AddRange(GetEliminations(cells, sudokuPuzzle));
+        eliminations.AddRange(GetEliminations(cells));
       }
 
       return eliminations.Count > 0 ?
@@ -39,7 +39,7 @@ namespace SimpleSudokuSolver.Strategy
         null;
     }
 
-    private IEnumerable<SingleStepSolution.Candidate> GetEliminations(Cell[] cells, SudokuPuzzle sudokuPuzzle)
+    private IEnumerable<SingleStepSolution.Candidate> GetEliminations(Cell[] cells)
     {
       var cellsWithValue = cells.Where(x => x.HasValue).ToArray();
       var cellsWithNoValue = cells.Where(x => !x.HasValue).ToArray();
@@ -52,8 +52,7 @@ namespace SimpleSudokuSolver.Strategy
         {
           if (cellWithNoValue.CanBe.Contains(cellWithValue.Value))
           {
-            var (RowIndex, ColumnIndex) = sudokuPuzzle.GetCellIndex(cellWithNoValue);
-            eliminations.Add(new SingleStepSolution.Candidate(RowIndex, ColumnIndex, cellWithValue.Value));
+            eliminations.Add(new SingleStepSolution.Candidate(cellWithNoValue.RowIndex, cellWithNoValue.ColumnIndex, cellWithValue.Value));
           }
         }
       }

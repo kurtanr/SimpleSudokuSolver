@@ -57,8 +57,7 @@ namespace SimpleSudokuSolver.Strategy
         var candidateCells = cellsWithNoValue.Where(x => x.CanBe.Contains(possibleValue)).ToArray();
         if (candidateCells.Length == 1)
         {
-          var (RowIndex, ColumnIndex) = sudokuPuzzle.GetCellIndex(candidateCells[0]);
-          return new SingleStepSolution(RowIndex, ColumnIndex, possibleValue, StrategyName);
+          return new SingleStepSolution(candidateCells[0].RowIndex, candidateCells[0].ColumnIndex, possibleValue, StrategyName);
         }
       }
 

@@ -65,8 +65,7 @@ namespace SimpleSudokuSolver.Strategy
               {
                 if (cell.CanBe.Contains(candidate))
                 {
-                  var (RowIndex, ColumnIndex) = sudokuPuzzle.GetCellIndex(cell);
-                  eliminations.Add(new SingleStepSolution.Candidate(RowIndex, ColumnIndex, candidate));
+                  eliminations.Add(new SingleStepSolution.Candidate(cell.RowIndex, cell.ColumnIndex, candidate));
                 }
               }
             }

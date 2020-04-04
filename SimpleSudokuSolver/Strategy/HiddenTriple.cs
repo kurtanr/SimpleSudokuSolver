@@ -46,7 +46,7 @@ namespace SimpleSudokuSolver.Strategy
               {
                 foreach (var cell in union)
                 {
-                  eliminations.AddRange(GetEliminations(cell, sudokuPuzzle, i, j, k));
+                  eliminations.AddRange(GetEliminations(cell, i, j, k));
                 }
               }
             }

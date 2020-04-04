@@ -36,9 +36,9 @@ namespace SimpleSudokuSolver.Tests.Model
       var toString = column.ToString();
       Assert.That(toString, Is.EqualTo($" {newLine} {newLine} {newLine} {newLine} {newLine} {newLine} {newLine} {newLine} {newLine}"));
 
-      column.Cells[0] = new Cell(1);
-      column.Cells[3] = new Cell(4);
-      column.Cells[8] = new Cell(0);
+      column.Cells[0] = new Cell(1, 0, 0);
+      column.Cells[3] = new Cell(4, 3, 0);
+      column.Cells[8] = new Cell(0, 8, 0);
       toString = column.ToString();
       Assert.That(toString, Is.EqualTo($"1{newLine} {newLine} {newLine}4{newLine} {newLine} {newLine} {newLine} {newLine}0{newLine}"));
     }

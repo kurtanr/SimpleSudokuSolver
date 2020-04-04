@@ -26,6 +26,16 @@ namespace SimpleSudokuSolver.Model
     }
 
     /// <summary>
+    /// Zero-based row index of cell in the puzzle.
+    /// </summary>
+    public int RowIndex { get; }
+
+    /// <summary>
+    /// Zero-based column index of cell in the puzzle.
+    /// </summary>
+    public int ColumnIndex { get; }
+
+    /// <summary>
     /// List of values which are allowed in this cell.
     /// Empty if cell has a value.
     /// </summary>
@@ -33,7 +43,12 @@ namespace SimpleSudokuSolver.Model
 
     public bool HasValue => _value > 0;
 
-    public Cell(int value) => Value = value;
+    public Cell(int value, int rowIndex, int columnIndex)
+    {
+      Value = value;
+      RowIndex = rowIndex;
+      ColumnIndex = columnIndex;
+    }
 
     public override string ToString() => Formatter.CellToString(this);
   }

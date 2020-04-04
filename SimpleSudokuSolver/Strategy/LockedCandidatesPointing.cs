@@ -46,8 +46,7 @@ namespace SimpleSudokuSolver.Strategy
 
             if (cell.CanBe.Contains(cellValue))
             {
-              var (RowIndex, ColumnIndex) = sudokuPuzzle.GetCellIndex(cell);
-              eliminations.Add(new SingleStepSolution.Candidate(RowIndex, ColumnIndex, cellValue));
+              eliminations.Add(new SingleStepSolution.Candidate(cell.RowIndex, cell.ColumnIndex, cellValue));
             }
           }
         }
@@ -63,8 +62,7 @@ namespace SimpleSudokuSolver.Strategy
 
             if (cell.CanBe.Contains(cellValue))
             {
-              var (RowIndex, ColumnIndex) = sudokuPuzzle.GetCellIndex(cell);
-              eliminations.Add(new SingleStepSolution.Candidate(RowIndex, ColumnIndex, cellValue));
+              eliminations.Add(new SingleStepSolution.Candidate(cell.RowIndex, cell.ColumnIndex, cellValue));
             }
           }
         }

@@ -26,8 +26,7 @@ namespace SimpleSudokuSolver.Strategy
       {
         if (cell.CanBe.Count == 1)
         {
-          var (RowIndex, ColumnIndex) = sudokuPuzzle.GetCellIndex(cell);
-          return new SingleStepSolution(RowIndex, ColumnIndex, cell.CanBe.Single(), StrategyName);
+          return new SingleStepSolution(cell.RowIndex, cell.ColumnIndex, cell.CanBe.Single(), StrategyName);
         }
       }
 

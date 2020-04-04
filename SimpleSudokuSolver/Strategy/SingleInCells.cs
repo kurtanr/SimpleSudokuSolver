@@ -49,8 +49,7 @@ namespace SimpleSudokuSolver.Strategy
         var knownValues = cells.Where(x => x.HasValue).Select(x => x.Value);
         var value = sudokuPuzzle.PossibleCellValues.Except(knownValues).Single();
 
-        var (RowIndex, ColumnIndex) = sudokuPuzzle.GetCellIndex(cellsWithNoValue[0]);
-        return new SingleStepSolution(RowIndex, ColumnIndex, value, StrategyName);
+        return new SingleStepSolution(cellsWithNoValue[0].RowIndex, cellsWithNoValue[0].ColumnIndex, value, StrategyName);
       }
 
       return null;

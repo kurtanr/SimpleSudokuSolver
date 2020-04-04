@@ -25,13 +25,13 @@ namespace SimpleSudokuSolver.Strategy
       foreach (var row in sudokuPuzzle.Rows)
       {
         cellCandidatePairsPerRow.AddRange(GetCellCandidatePairsWhichAppearOnlyInSingleBlock(
-          row.Cells, x => sudokuPuzzle.GetCellIndex(x).ColumnIndex));
+          row.Cells, x => x.ColumnIndex));
       }
 
       foreach (var column in sudokuPuzzle.Columns)
       {
         cellCandidatePairsPerColumn.AddRange(GetCellCandidatePairsWhichAppearOnlyInSingleBlock(
-          column.Cells, x => sudokuPuzzle.GetCellIndex(x).RowIndex));
+          column.Cells, x => x.RowIndex));
       }
 
       var eliminations = new List<SingleStepSolution.Candidate>();
@@ -106,7 +106,6 @@ namespace SimpleSudokuSolver.Strategy
       foreach (var cellCandidatePair in cellCandidatePairs)
       {
         var cell = cellCandidatePair.Item1;
-        var cellIndex = sudokuPuzzle.GetCellIndex(cell);
         var candidate = cellCandidatePair.Item2;
         var blockIndex = sudokuPuzzle.GetBlockIndex(cell);
         var block = sudokuPuzzle.Blocks[blockIndex.RowIndex, blockIndex.ColumnIndex];
@@ -121,16 +120,14 @@ namespace SimpleSudokuSolver.Strategy
 
           // If outside cells are part of the same row,
           // ignore block cells that are part of that same row (similar for columns)
-          var blockCellIndex = sudokuPuzzle.GetCellIndex(blockCell);
-          if ((perRow && cellIndex.RowIndex == blockCellIndex.RowIndex) ||
-            (!perRow && cellIndex.ColumnIndex == blockCellIndex.ColumnIndex))
+          if ((perRow && cell.RowIndex == blockCell.RowIndex) ||
+            (!perRow && cell.ColumnIndex == blockCell.ColumnIndex))
           {
             continue;
           }
 
-          var cellIndexOfBlockCell = sudokuPuzzle.GetCellIndex(blockCell);
           eliminations.Add(new SingleStepSolution.Candidate(
-            cellIndexOfBlockCell.RowIndex, cellIndexOfBlockCell.ColumnIndex, candidate));
+            blockCell.RowIndex, blockCell.ColumnIndex, candidate));
         }
       }
 

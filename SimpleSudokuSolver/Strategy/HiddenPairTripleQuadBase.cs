@@ -63,18 +63,15 @@ namespace SimpleSudokuSolver.Strategy
     /// - if member is not part of <paramref name="valuesToExclude"/> return it as an elimination
     /// </summary>
     /// <param name="cell">Cell which is analyzed for eliminations.</param>
-    /// <param name="sudokuPuzzle">Sudoku puzzle to which the <paramref name="cell"/> belongs.</param>
     /// <param name="valuesToExclude">Values which are not elimination candidates.</param>
     /// <returns>See summary.</returns>
-    protected IEnumerable<SingleStepSolution.Candidate> GetEliminations(
-      Cell cell, SudokuPuzzle sudokuPuzzle, params int[] valuesToExclude)
+    protected IEnumerable<SingleStepSolution.Candidate> GetEliminations(Cell cell, params int[] valuesToExclude)
     {
       var eliminations = new List<SingleStepSolution.Candidate>();
-      var cellIndex = sudokuPuzzle.GetCellIndex(cell);
       var eliminatedValues = cell.CanBe.Except(valuesToExclude);
       foreach (var eliminatedValue in eliminatedValues)
       {
-        eliminations.Add(new SingleStepSolution.Candidate(cellIndex.RowIndex, cellIndex.ColumnIndex, eliminatedValue));
+        eliminations.Add(new SingleStepSolution.Candidate(cell.RowIndex, cell.ColumnIndex, eliminatedValue));
       }
 
       return eliminations;

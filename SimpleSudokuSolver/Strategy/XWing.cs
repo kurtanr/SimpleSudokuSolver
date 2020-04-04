@@ -56,11 +56,11 @@ namespace SimpleSudokuSolver.Strategy
         return candidates.Select(
           x =>
           {
-            var cell1Index = sudokuPuzzle.GetCellIndex(x.Item2);
-            var cell2Index = sudokuPuzzle.GetCellIndex(x.Item3);
+            var cell1 = x.Item2;
+            var cell2 = x.Item3;
             return new Tuple<int, int, int>(x.Item1, 
-              perRow ? cell1Index.ColumnIndex : cell1Index.RowIndex,
-              perRow ? cell2Index.ColumnIndex : cell2Index.RowIndex);
+              perRow ? cell1.ColumnIndex : cell1.RowIndex,
+              perRow ? cell2.ColumnIndex : cell2.RowIndex);
           }
         ).ToArray();
       }
@@ -149,15 +149,15 @@ namespace SimpleSudokuSolver.Strategy
         var value = xWingMember.Item1;
 
         // diagonal cells
-        var firstCellIndex = sudokuPuzzle.GetCellIndex(xWingMember.Item2);
-        var secondCellIndex = sudokuPuzzle.GetCellIndex(xWingMember.Item5);
+        var firstCell = xWingMember.Item2;
+        var secondCell = xWingMember.Item5;
 
         if (perRow)
         {
-          var column1 = sudokuPuzzle.Columns[firstCellIndex.ColumnIndex];
-          var column2 = sudokuPuzzle.Columns[secondCellIndex.ColumnIndex];
-          var row1Index = firstCellIndex.RowIndex;
-          var row2Index = secondCellIndex.RowIndex;
+          var column1 = sudokuPuzzle.Columns[firstCell.ColumnIndex];
+          var column2 = sudokuPuzzle.Columns[secondCell.ColumnIndex];
+          var row1Index = firstCell.RowIndex;
+          var row2Index = secondCell.RowIndex;
 
           // eliminations are those cell that:
           // - are in 'column1' or 'column2'
@@ -165,17 +165,16 @@ namespace SimpleSudokuSolver.Strategy
           // - are not in row1Index or row2Index
           foreach (var cell in column1.Cells.Union(column2.Cells))
           {
-            var cellIndex = sudokuPuzzle.GetCellIndex(cell);
-            if (cell.CanBe.Contains(value) && cellIndex.RowIndex != row1Index && cellIndex.RowIndex != row2Index)
-              eliminations.Add(new SingleStepSolution.Candidate(cellIndex.RowIndex, cellIndex.ColumnIndex, value));
+            if (cell.CanBe.Contains(value) && cell.RowIndex != row1Index && cell.RowIndex != row2Index)
+              eliminations.Add(new SingleStepSolution.Candidate(cell.RowIndex, cell.ColumnIndex, value));
           }
         }
         else
         {
-          var row1 = sudokuPuzzle.Rows[firstCellIndex.RowIndex];
-          var row2 = sudokuPuzzle.Rows[secondCellIndex.RowIndex];
-          var column1Index = firstCellIndex.ColumnIndex;
-          var column2Index = secondCellIndex.ColumnIndex;
+          var row1 = sudokuPuzzle.Rows[firstCell.RowIndex];
+          var row2 = sudokuPuzzle.Rows[secondCell.RowIndex];
+          var column1Index = firstCell.ColumnIndex;
+          var column2Index = secondCell.ColumnIndex;
 
           // eliminations are those cell that:
           // - are in 'row1' or 'row2'
@@ -183,9 +182,8 @@ namespace SimpleSudokuSolver.Strategy
           // - are not in column1Index or column2Index
           foreach (var cell in row1.Cells.Union(row2.Cells))
           {
-            var cellIndex = sudokuPuzzle.GetCellIndex(cell);
-            if (cell.CanBe.Contains(value) && cellIndex.ColumnIndex != column1Index && cellIndex.ColumnIndex != column2Index)
-              eliminations.Add(new SingleStepSolution.Candidate(cellIndex.RowIndex, cellIndex.ColumnIndex, value));
+            if (cell.CanBe.Contains(value) && cell.ColumnIndex != column1Index && cell.ColumnIndex != column2Index)
+              eliminations.Add(new SingleStepSolution.Candidate(cell.RowIndex, cell.ColumnIndex, value));
           }
         }
       }

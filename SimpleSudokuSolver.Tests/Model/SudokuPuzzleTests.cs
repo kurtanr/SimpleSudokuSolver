@@ -128,32 +128,10 @@ namespace SimpleSudokuSolver.Tests.Model
     {
       var sudokuPuzzle = new SudokuPuzzle(_sudoku);
       var cell = sudokuPuzzle.Cells[4, 7];
+
       Assert.That(cell.Value, Is.EqualTo(5));
-
-      var cellIndex = sudokuPuzzle.GetCellIndex(cell);
-
-      Assert.That(cellIndex.RowIndex, Is.EqualTo(4));
-      Assert.That(cellIndex.ColumnIndex, Is.EqualTo(7));
-    }
-
-    [Test]
-    public void GetCellIndexForNullTest()
-    {
-      var sudokuPuzzle = new SudokuPuzzle(_sudoku);
-      var cellIndex = sudokuPuzzle.GetCellIndex(null);
-
-      Assert.That(cellIndex.RowIndex, Is.EqualTo(-1));
-      Assert.That(cellIndex.ColumnIndex, Is.EqualTo(-1));
-    }
-
-    [Test]
-    public void GetCellIndexForNonExistingCellTest()
-    {
-      var sudokuPuzzle = new SudokuPuzzle(_sudoku);
-      var cellIndex = sudokuPuzzle.GetCellIndex(new Cell(5));
-
-      Assert.That(cellIndex.RowIndex, Is.EqualTo(-1));
-      Assert.That(cellIndex.ColumnIndex, Is.EqualTo(-1));
+      Assert.That(cell.RowIndex, Is.EqualTo(4));
+      Assert.That(cell.ColumnIndex, Is.EqualTo(7));
     }
 
     [Test]
@@ -183,8 +161,9 @@ namespace SimpleSudokuSolver.Tests.Model
     public void GetBlockIndexForNonExistingCellTest()
     {
       var sudokuPuzzle = new SudokuPuzzle(_sudoku);
-      var cellIndex = sudokuPuzzle.GetBlockIndex(new Cell(5));
+      var cellIndex = sudokuPuzzle.GetBlockIndex(new Cell(0, 0, 0));
 
+      // Cell equality is compared by reference (Object.ReferenceEquals)
       Assert.That(cellIndex.RowIndex, Is.EqualTo(-1));
       Assert.That(cellIndex.ColumnIndex, Is.EqualTo(-1));
     }

@@ -38,8 +38,8 @@ namespace SimpleSudokuSolver.Strategy
             hiddenCandidates.ContainsKey(j) &&
             hiddenCandidates[i].SequenceEqual(hiddenCandidates[j]))
           {
-            eliminations.AddRange(GetEliminations(hiddenCandidates[i][0], sudokuPuzzle, i, j));
-            eliminations.AddRange(GetEliminations(hiddenCandidates[i][1], sudokuPuzzle, i, j));
+            eliminations.AddRange(GetEliminations(hiddenCandidates[i][0], i, j));
+            eliminations.AddRange(GetEliminations(hiddenCandidates[i][1], i, j));
           }
         }
       }

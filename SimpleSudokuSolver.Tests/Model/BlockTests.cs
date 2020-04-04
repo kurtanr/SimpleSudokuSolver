@@ -43,9 +43,9 @@ namespace SimpleSudokuSolver.Tests.Model
       var toString = block.ToString();
       Assert.That(toString, Is.EqualTo($"     {newLine}     {newLine}     {newLine}"));
 
-      block.Cells[0, 0] = new Cell(1);
-      block.Cells[1, 1] = new Cell(5);
-      block.Cells[2, 2] = new Cell(0);
+      block.Cells[0, 0] = new Cell(1, 0, 0);
+      block.Cells[1, 1] = new Cell(5, 1, 1);
+      block.Cells[2, 2] = new Cell(0, 2, 2);
       toString = block.ToString();
       Assert.That(toString, Is.EqualTo($"1    {newLine}  5  {newLine}    0{newLine}"));
     }

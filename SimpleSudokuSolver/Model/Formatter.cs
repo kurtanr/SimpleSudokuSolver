@@ -10,7 +10,7 @@ namespace SimpleSudokuSolver.Model
   {
     internal static string CellToString(Cell cell)
     {
-      return cell.Value.ToString();
+      return $"[{cell.RowIndex},{cell.ColumnIndex}]={cell.Value}";
     }
 
     internal static string BlockToString(Block block)

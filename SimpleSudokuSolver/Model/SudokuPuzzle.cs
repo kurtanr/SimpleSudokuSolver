@@ -46,7 +46,7 @@ namespace SimpleSudokuSolver.Model
             Columns[j] = new Column(j, NumberOfRowsOrColumnsInPuzzle);
           }
 
-          var cell = new Cell(sudoku[i, j]);
+          var cell = new Cell(sudoku[i, j], i, j);
           if (!cell.HasValue)
           {
             cell.CanBe.AddRange(PossibleCellValues);
@@ -154,27 +154,6 @@ namespace SimpleSudokuSolver.Model
         }
       }
       return result;
-    }
-
-    /// <summary>
-    /// Returns zero-based row and column index of the <paramref name="cell"/>.
-    /// Returns -1 for both row and column index if <paramref name="cell"/> is null or not part of the puzzle.
-    /// </summary>
-    public (int RowIndex, int ColumnIndex) GetCellIndex(Cell cell)
-    {
-      if (cell == null)
-        return (-1, -1);
-
-      for (int i = 0; i < NumberOfRowsOrColumnsInPuzzle; i++)
-      {
-        for (int j = 0; j < NumberOfRowsOrColumnsInPuzzle; j++)
-        {
-          if (Cells[i, j] == cell)
-            return (i, j);
-        }
-      }
-
-      return (-1, -1);
     }
 
     /// <summary>

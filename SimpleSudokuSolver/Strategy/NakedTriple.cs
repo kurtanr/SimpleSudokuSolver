@@ -98,8 +98,7 @@ namespace SimpleSudokuSolver.Strategy
         {
           foreach (var finalItem in finalItems)
           {
-            var (RowIndex, ColumnIndex) = sudokuPuzzle.GetCellIndex(cellWithNoValue);
-            eliminations.Add(new SingleStepSolution.Candidate(RowIndex, ColumnIndex, finalItem));
+            eliminations.Add(new SingleStepSolution.Candidate(cellWithNoValue.RowIndex, cellWithNoValue.ColumnIndex, finalItem));
           }
         }
       }
