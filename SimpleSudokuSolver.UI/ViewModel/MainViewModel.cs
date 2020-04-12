@@ -20,8 +20,9 @@ namespace SimpleSudokuSolver.UI.ViewModel
     public event Func<SudokuPuzzle> LoadGame;
     public event Action<SudokuPuzzle> SaveGame;
     public event Action ExitGame;
+    public event Action InvalidSudokuLoaded;
 
-    public Tuple<int,int> LastUpdatedCellIndex { get; private set; }
+    public Tuple<int, int> LastUpdatedCellIndex { get; private set; }
 
     private bool _showCandidates;
     public bool ShowCandidates
@@ -114,18 +115,31 @@ namespace SimpleSudokuSolver.UI.ViewModel
     private void ExecuteLoadGameCommand()
     {
       var loadGame = LoadGame;
-      if (loadGame != null)
+      if (loadGame == null)
       {
-        var sudokuPuzzle = loadGame();
-        if (sudokuPuzzle != null)
-        {
-          SudokuPuzzle = sudokuPuzzle;
-          SolvedSudokuPuzzle = _solver.Solve(sudokuPuzzle.ToIntArray());
-          LastUpdatedCellIndex = null;
-          Message = string.Empty;
-          UpdateStatusMessage();
-        }
+        return;
       }
+
+      var sudokuPuzzle = loadGame();
+      if (sudokuPuzzle == null)
+      {
+        return;
+      }
+
+      try
+      {
+        SolvedSudokuPuzzle = _solver.Solve(sudokuPuzzle.ToIntArray());
+      }
+      catch (Exception)
+      {
+        InvalidSudokuLoaded?.Invoke();
+        return;
+      }
+
+      SudokuPuzzle = sudokuPuzzle;
+      LastUpdatedCellIndex = null;
+      Message = string.Empty;
+      UpdateStatusMessage();
     }
 
     private void ExecuteSaveGameCommand()
@@ -225,11 +239,11 @@ namespace SimpleSudokuSolver.UI.ViewModel
       }
 
       var sb = new StringBuilder("Values left: ");
-      for(int i = 1; i <= SudokuPuzzle.NumberOfRowsOrColumnsInPuzzle; i++)
+      for (int i = 1; i <= SudokuPuzzle.NumberOfRowsOrColumnsInPuzzle; i++)
       {
         var numberOfValuesLeft = SudokuPuzzle.NumberOfRowsOrColumnsInPuzzle - SudokuPuzzle.Cells.OfType<Cell>().Count(x => x.Value == i);
         var separator = (i == SudokuPuzzle.NumberOfRowsOrColumnsInPuzzle) ? string.Empty : ",";
-        if(numberOfValuesLeft > 0)
+        if (numberOfValuesLeft > 0)
           sb.Append($"{i} x{numberOfValuesLeft}{separator} ");
       }
 

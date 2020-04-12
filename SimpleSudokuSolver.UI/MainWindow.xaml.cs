@@ -3,6 +3,7 @@ using SimpleSudokuSolver.Model;
 using SimpleSudokuSolver.PuzzleProviders;
 using SimpleSudokuSolver.UI.PuzzleProviders;
 using SimpleSudokuSolver.UI.ViewModel;
+using System;
 using System.IO;
 using System.Windows;
 
@@ -24,6 +25,7 @@ namespace SimpleSudokuSolver.UI
       viewModel.LoadGame += OnLoadGame;
       viewModel.SaveGame += OnSaveGame;
       viewModel.ExitGame += OnExitGame;
+      viewModel.InvalidSudokuLoaded += OnInvalidSudokuLoaded;
 
       DataContext = viewModel;
     }
@@ -35,12 +37,26 @@ namespace SimpleSudokuSolver.UI
         CheckFileExists = true,
         Filter = DialogFilter
       };
-      if(openFileDialog.ShowDialog() == true)
+      if (openFileDialog.ShowDialog() == true)
       {
-        var sudoku = new SudokuFilePuzzleProvider(openFileDialog.FileName).GetPuzzle();
-        return new SudokuPuzzle(sudoku);
+        try
+        {
+          var sudoku = new SudokuFilePuzzleProvider(openFileDialog.FileName).GetPuzzle();
+          return new SudokuPuzzle(sudoku);
+        }
+        catch (Exception)
+        {
+          MessageBox.Show(this, $"Failed to load sudoku puzzle from file:\r\n{openFileDialog.FileName}", "Error loading Sudoku",
+            MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK, MessageBoxOptions.None);
+        }
       }
       return null;
+    }
+
+    private void OnInvalidSudokuLoaded()
+    {
+      MessageBox.Show(this, $"Loaded file does not contain a valid sudoku puzzle\r\n(it is unsolvable).", "Error loading Sudoku",
+        MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK, MessageBoxOptions.None);
     }
 
     private void OnSaveGame(SudokuPuzzle sudokuPuzzle)
